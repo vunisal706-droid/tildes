@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>La Aventura de las Tildes - Capitulín</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #FF6B35; --secondary: #4ECDC4; --accent: #FFE66D;
+            --dark: #2C3E50; --danger: #E74C3C; --success: #27AE60;
+        }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        #game-container {
+            width: 100%; max-width: 900px; height: 100vh; max-height: 700px;
+            position: relative; overflow: hidden; background: #2C3E50;
+        }
+        @media (min-width: 920px) {
+            #game-container { border-radius: 20px; height: 95vh; box-shadow: 0 0 60px rgba(0,0,0,0.5); }
+        }
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; align-items: center;
+            justify-content: center; padding: 20px; z-index: 10;
+        }
+        .screen.active { display: flex; }
+        #menu-screen {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%; animation: gradientShift 8s ease infinite;
+        }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .game-title {
+            font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 7vw, 3.5rem);
+            color: white; text-shadow: 4px 4px 0 rgba(0,0,0,0.2); text-align: center; margin-bottom: 5px;
+        }
+        .game-subtitle { font-size: 1.3rem; color: var(--accent); margin-bottom: 40px; font-weight: 600; }
+        .logo-icon { font-size: 4rem; display: block; margin-bottom: 20px; animation: logoFloat 3s ease-in-out infinite; }
+        @keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .menu-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; }
+        .btn {
+            font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 700;
+            padding: 14px 28px; border: none; border-radius: 50px; cursor: pointer;
+            transition: all 0.2s ease; text-transform: uppercase;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #ff8c5a 100%);
+            color: white; box-shadow: 0 4px 0 #c44d1e;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 0 #c44d1e; }
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #7ee8e0 100%);
+            color: var(--dark); box-shadow: 0 4px 0 #35a79c;
+        }
+        .screen-title {
+            font-family: 'Fredoka One', cursive; font-size: clamp(1.5rem, 5vw, 2.2rem);
+            color: white; text-shadow: 3px 3px 0 rgba(0,0,0,0.2); margin-bottom: 30px;
+        }
+        #players-screen { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .players-grid { display: flex; gap: 15px; margin-bottom: 30px; }
+        .player-option {
+            width: 100px; height: 120px; background: white; border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 4px solid transparent;
+        }
+        .player-option:hover { transform: translateY(-5px); }
+        .player-option.selected { border-color: var(--accent); background: var(--accent); }
+        .player-option-num { font-family: 'Fredoka One', cursive; font-size: 2.5rem; color: var(--dark); }
+        .player-option-label { font-size: 0.85rem; color: #666; font-weight: 600; }
+        #mode-screen { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .mode-options { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
+        .mode-option {
+            width: 160px; padding: 25px 15px; background: white; border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; cursor: pointer;
+            transition: all 0.2s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 4px solid transparent;
+        }
+        .mode-option:hover { transform: translateY(-5px); }
+        .mode-option.selected { border-color: var(--accent); background: var(--accent); }
+        .mode-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .mode-title { font-size: 1.1rem; font-weight: 700; color: var(--dark); }
+        .mode-desc { font-size: 0.75rem; color: #666; text-align: center; margin-top: 5px; }
+        #instructions-screen { background: linear-gradient(135deg, #2C3E50 0%, #4CA1AF 100%); }
+        .instructions-box {
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 25px; max-width: 450px; color: white; margin-bottom: 25px;
+        }
+        .instructions-box h3 { font-family: 'Fredoka One', cursive; color: var(--accent); margin-bottom: 12px; font-size: 1.3rem; }
+        .instructions-box p { margin-bottom: 8px; line-height: 1.5; font-size: 0.95rem; }
+        .key-icon { display: inline-block; background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 5px; font-family: monospace; font-weight: bold; }
+        .game-hud {
+            position: absolute; top: 0; left: 0; right: 0; padding: 8px 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); z-index: 100;
+        }
+        .hud-section { display: flex; align-items: center; gap: 12px; }
+        .hud-item { display: flex; align-items: center; gap: 5px; color: white; font-weight: 700; font-size: 0.9rem; }
+        .current-player { background: var(--accent); color: var(--dark); padding: 4px 12px; border-radius: 15px; font-weight: 800; }
+        .lives-display { display: flex; gap: 2px; }
+        .heart { font-size: 1.1rem; transition: all 0.3s ease; }
+        .heart.lost { opacity: 0.3; transform: scale(0.7); }
+        .world-badge { background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 10px; font-size: 0.85rem; }
+        .word-badge {
+            position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
+            padding: 8px 25px; border-radius: 25px; z-index: 50; border: 2px solid rgba(255,255,255,0.2);
+        }
+        .word-badge-text { font-size: 1.4rem; font-weight: 800; color: white; letter-spacing: 2px; }
+        #game-area { width: 100%; height: 100%; position: relative; overflow: hidden; }
+        .world-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .bg-castle { background: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%); }
+        .bg-forest { background: linear-gradient(180deg, #87CEEB 0%, #98D8AA 40%, #1B4D3E 100%); }
+        .bg-ocean { background: linear-gradient(180deg, #4FC3F7 0%, #0288D1 30%, #01579B 70%, #002f6c 100%); }
+        .bg-space { background: linear-gradient(180deg, #0d0d2b 0%, #1a1a4e 50%, #2d1b4e 100%); }
+        .bg-candy { background: linear-gradient(180deg, #FFECB3 0%, #F8BBD9 50%, #E1BEE7 100%); }
+        .platform { position: absolute; height: 18px; border-radius: 5px; z-index: 5; }
+        .platform-castle { background: linear-gradient(180deg, #6D6D6D 0%, #4A4A4A 50%, #3D3D3D 100%); border-top: 3px solid #8a8a8a; box-shadow: 0 4px 0 #2d2d2d; }
+        .platform-forest { background: linear-gradient(180deg, #8D6E63 0%, #6D4C41 50%, #5D4037 100%); border-top: 3px solid #A1887F; box-shadow: 0 4px 0 #4E342E; }
+        .platform-ocean { background: linear-gradient(180deg, #0097A7 0%, #00838F 50%, #006064 100%); border-top: 3px solid #26C6DA; box-shadow: 0 4px 0 #004D40; }
+        .platform-space { background: linear-gradient(180deg, #7E57C2 0%, #5E35B1 50%, #4527A0 100%); border-top: 3px solid #B39DDB; box-shadow: 0 4px 0 #311B92; }
+        .platform-candy { background: linear-gradient(180deg, #F48FB1 0%, #F06292 50%, #EC407A 100%); border-top: 3px solid #F8BBD9; box-shadow: 0 4px 0 #C2185B; }
+        .ladder { position: absolute; width: 28px; z-index: 4; background: repeating-linear-gradient(180deg, #8D6E63 0px, #8D6E63 4px, transparent 4px, transparent 20px); border-left: 4px solid #5D4037; border-right: 4px solid #5D4037; }
+        .player { position: absolute; width: 40px; height: 55px; z-index: 20; transition: transform 0.1s ease; }
+        .player-sprite { width: 100%; height: 100%; position: relative; }
+        .player-head { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 28px; height: 28px; background: #FFCC80; border-radius: 50%; box-shadow: inset -3px -3px 8px rgba(0,0,0,0.1); }
+        .player-hair { position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 30px; height: 18px; background: #5D4037; border-radius: 50% 50% 30% 30%; z-index: -1; }
+        .player-eyes { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+        .player-eye { width: 6px; height: 7px; background: #333; border-radius: 50%; }
+        .player-body { position: absolute; top: 26px; left: 50%; transform: translateX(-50%); width: 24px; height: 18px; background: linear-gradient(180deg, #2196F3 0%, #1976D2 100%); border-radius: 5px 5px 0 0; }
+        .player-arms { position: absolute; top: 28px; left: 50%; transform: translateX(-50%); width: 40px; display: flex; justify-content: space-between; }
+        .player-arm { width: 8px; height: 14px; background: linear-gradient(180deg, #2196F3 0%, #1976D2 100%); border-radius: 4px; transform-origin: top center; }
+        .player-hand { width: 7px; height: 7px; background: #FFCC80; border-radius: 50%; margin-top: -1px; }
+        .player-legs { position: absolute; top: 42px; left: 50%; transform: translateX(-50%); width: 20px; display: flex; justify-content: space-between; }
+        .player-leg { width: 8px; height: 13px; background: #37474F; border-radius: 0 0 3px 3px; transform-origin: top center; }
+        .player-shoe { width: 10px; height: 5px; background: #E53935; border-radius: 3px; margin-top: -1px; margin-left: -1px; }
+        .player.walking .player-leg:first-child { animation: legWalk 0.25s ease-in-out infinite; }
+        .player.walking .player-leg:last-child { animation: legWalk 0.25s ease-in-out infinite reverse; }
+        .player.walking .player-arm:first-child { animation: armSwing 0.25s ease-in-out infinite reverse; }
+        .player.walking .player-arm:last-child { animation: armSwing 0.25s ease-in-out infinite; }
+        @keyframes legWalk { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
+        @keyframes armSwing { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } }
+        .tilde { position: absolute; width: 44px; height: 52px; z-index: 15; cursor: pointer; }
+        .tilde-body { width: 44px; height: 44px; background: linear-gradient(135deg, #FFD54F 0%, #FFC107 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: relative; }
+        .tilde-char { font-family: 'Nunito', sans-serif; font-size: 1.6rem; font-weight: 900; color: var(--dark); }
+        .tilde-eyes { position: absolute; top: 8px; display: flex; gap: 8px; }
+        .tilde-eye { width: 5px; height: 6px; background: #333; border-radius: 50%; }
+        .tilde-legs { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; }
+        .tilde-leg { width: 6px; height: 10px; background: #FFA000; border-radius: 0 0 3px 3px; }
+        .tilde.running .tilde-leg:first-child { animation: tildeLegRun 0.15s ease-in-out infinite; }
+        .tilde.running .tilde-leg:last-child { animation: tildeLegRun 0.15s ease-in-out infinite reverse; }
+        @keyframes tildeLegRun { 0%, 100% { transform: rotate(-30deg); } 50% { transform: rotate(30deg); } }
+        .tilde.collected { animation: tildeCollected 0.4s ease forwards; }
+        @keyframes tildeCollected { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3) rotate(15deg); } 100% { transform: scale(0); opacity: 0; } }
+        .enemy { position: absolute; z-index: 18; }
+        .pencil-enemy { width: 18px; height: 55px; }
+        .pencil-body { width: 100%; height: 40px; background: linear-gradient(90deg, #FDD835 0%, #FFEB3B 30%, #FDD835 70%, #F9A825 100%); border-radius: 3px; position: relative; }
+        .pencil-top { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 18px; height: 10px; background: linear-gradient(90deg, #FFA726 0%, #FFB74D 50%, #FFA726 100%); border-radius: 2px 2px 0 0; }
+        .pencil-tip { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-top: 18px solid #F5DEB3; }
+        .pencil-face { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 14px; }
+        .pencil-brows { display: flex; justify-content: center; gap: 2px; margin-bottom: 2px; }
+        .pencil-brow { width: 5px; height: 2px; background: #333; border-radius: 1px; }
+        .pencil-brow:first-child { transform: rotate(20deg); }
+        .pencil-brow:last-child { transform: rotate(-20deg); }
+        .pencil-eyes { display: flex; justify-content: center; gap: 3px; }
+        .pencil-eye { width: 4px; height: 4px; background: #333; border-radius: 50%; }
+        .pencil-enemy.falling { animation: pencilWobble 0.3s ease-in-out infinite alternate; }
+        @keyframes pencilWobble { 0% { transform: rotate(-8deg); } 100% { transform: rotate(8deg); } }
+        .touch-controls { position: absolute; bottom: 8px; left: 0; right: 0; display: none; justify-content: space-between; padding: 0 15px; z-index: 200; pointer-events: none; }
+        .touch-controls.active { display: flex; }
+        .control-group { display: flex; gap: 8px; pointer-events: auto; }
+        .touch-btn { width: 50px; height: 50px; background: rgba(255,255,255,0.25); border: 2px solid rgba(255,255,255,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: white; cursor: pointer; user-select: none; }
+        .touch-btn:active { background: rgba(255,255,255,0.45); transform: scale(0.95); }
+        .touch-btn-jump { width: 65px; height: 65px; font-size: 1.6rem; }
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 300; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: modalFadeIn 0.3s ease; }
+        @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-content { background: white; border-radius: 25px; padding: 30px; max-width: 400px; width: 90%; text-align: center; animation: modalSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes modalSlideIn { from { transform: scale(0.8) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        .modal-title { font-family: 'Fredoka One', cursive; font-size: 1.3rem; color: var(--dark); margin-bottom: 20px; }
+        .modal-word { font-size: 2rem; font-weight: 900; color: var(--dark); margin-bottom: 15px; display: flex; justify-content: center; gap: 2px; }
+        .letter-box { padding: 8px 10px; border-radius: 8px; transition: all 0.2s ease; }
+        .letter-box.vowel { background: #E3F2FD; cursor: pointer; }
+        .letter-box.vowel:hover { background: #BBDEFB; transform: scale(1.1); }
+        .letter-box.selected { background: var(--primary); color: white; }
+        .classification-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .class-option { padding: 12px 20px; background: #E8F5E9; border: 3px solid transparent; border-radius: 15px; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+        .class-option:hover { background: #C8E6C9; transform: translateY(-2px); }
+        .class-option.selected { background: var(--success); color: white; border-color: #1B5E20; }
+        .modal-btn { padding: 12px 35px; background: var(--success); color: white; border: none; border-radius: 25px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+        .modal-btn:hover { background: #219653; transform: scale(1.05); }
+        .modal-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .diacritic-sentence { font-size: 1.3rem; font-weight: 600; color: var(--dark); margin-bottom: 20px; line-height: 1.6; }
+        .diacritic-options { display: flex; gap: 15px; justify-content: center; margin-bottom: 10px; }
+        .diacritic-btn { padding: 15px 30px; background: #FFF3E0; border: 3px solid transparent; border-radius: 15px; font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease; }
+        .diacritic-btn:hover { background: #FFE0B2; transform: scale(1.05); }
+        .feedback { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: 'Fredoka One', cursive; font-size: 2.5rem; pointer-events: none; z-index: 400; opacity: 0; text-shadow: 3px 3px 0 rgba(0,0,0,0.2); }
+        .feedback.show-correct { color: var(--success); animation: feedbackPop 1.2s ease forwards; }
+        .feedback.show-incorrect { color: var(--danger); animation: feedbackPop 1.2s ease forwards; }
+        @keyframes feedbackPop { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0; } 15% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; } 70% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -70%) scale(1); opacity: 0; } }
+        .transition-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 350; }
+        .transition-overlay.active { display: flex; }
+        .transition-content { text-align: center; color: white; }
+        .transition-title { font-family: 'Fredoka One', cursive; font-size: 2rem; margin-bottom: 10px; }
+        .transition-player { font-size: 1.8rem; color: var(--accent); margin-bottom: 25px; font-weight: 800; }
+        .world-intro { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 360; color: white; text-align: center; }
+        .world-intro.active { display: flex; animation: worldZoom 0.5s ease; }
+        @keyframes worldZoom { from { opacity: 0; transform: scale(1.3); } to { opacity: 1; transform: scale(1); } }
+        .world-intro-name { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 10vw, 4rem); text-shadow: 4px 4px 0 rgba(0,0,0,0.3); margin-bottom: 10px; }
+        .world-intro-level { font-size: 1.5rem; opacity: 0.9; font-weight: 700; }
+        .goal-zone { position: absolute; top: 65px; left: 50%; transform: translateX(-50%); padding: 10px 25px; background: linear-gradient(135deg, var(--accent) 0%, #FFB300 100%); border-radius: 12px; font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--dark); box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10; animation: goalGlow 2s ease-in-out infinite; }
+        @keyframes goalGlow { 0%, 100% { box-shadow: 0 4px 15px rgba(255,193,7,0.4); } 50% { box-shadow: 0 4px 25px rgba(255,193,7,0.7); } }
+        .pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 500; }
+        .pause-overlay.active { display: flex; }
+        .pause-title { font-family: 'Fredoka One', cursive; font-size: 3rem; color: white; margin-bottom: 30px; }
+        #results-screen { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a3e 100%); }
+        .results-title { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 8vw, 3rem); color: var(--accent); text-shadow: 3px 3px 0 rgba(0,0,0,0.3); margin-bottom: 30px; }
+        .podium { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 30px; }
+        .podium-place { display: flex; flex-direction: column; align-items: center; padding: 15px 20px; border-radius: 15px 15px 0 0; min-width: 90px; }
+        .podium-place.first { background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%); height: 140px; order: 2; }
+        .podium-place.second { background: linear-gradient(180deg, #C0C0C0 0%, #A0A0A0 100%); height: 110px; order: 1; }
+        .podium-place.third { background: linear-gradient(180deg, #CD7F32 0%, #8B4513 100%); height: 80px; order: 3; }
+        .podium-medal { font-size: 1.8rem; margin-bottom: 5px; }
+        .podium-name { font-weight: 700; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .podium-score { font-size: 1.3rem; font-weight: 800; color: white; }
+        .coop-result { text-align: center; margin-bottom: 30px; }
+        .coop-total { font-family: 'Fredoka One', cursive; font-size: 3rem; color: var(--accent); }
+        .coop-goal { font-size: 1.2rem; color: white; opacity: 0.8; }
+        .coop-status { font-size: 1.5rem; margin-top: 10px; }
+        .collected-indicator { position: absolute; top: 50px; right: 15px; background: rgba(0,0,0,0.7); padding: 8px 15px; border-radius: 20px; display: none; align-items: center; gap: 8px; z-index: 100; }
+        .collected-indicator.active { display: flex; }
+        .collected-indicator span { color: white; font-weight: 700; font-size: 0.9rem; }
+        .collected-preview { width: 30px; height: 30px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; }
+        .star { position: absolute; width: 3px; height: 3px; background: white; border-radius: 50%; animation: twinkle 2s ease-in-out infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        .moon { position: absolute; width: 60px; height: 60px; background: radial-gradient(circle at 30% 30%, #fffde7 0%, #ffd54f 100%); border-radius: 50%; box-shadow: 0 0 40px rgba(255, 213, 79, 0.4); }
+        .sun { position: absolute; width: 70px; height: 70px; background: radial-gradient(circle, #FFF59D 0%, #FFD54F 60%, #FFB300 100%); border-radius: 50%; box-shadow: 0 0 60px rgba(255, 213, 79, 0.6); }
+        .bubble { position: absolute; width: 15px; height: 15px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 100%); border-radius: 50%; animation: bubbleFloat 4s ease-in-out infinite; }
+        @keyframes bubbleFloat { 0% { transform: translateY(0) scale(1); opacity: 0.7; } 100% { transform: translateY(-400px) scale(0.5); opacity: 0; } }
+        .planet { position: absolute; border-radius: 50%; box-shadow: inset -10px -10px 20px rgba(0,0,0,0.4); }
+        .lollipop { position: absolute; bottom: 0; }
+        .lollipop-candy { width: 50px; height: 50px; border-radius: 50%; background: conic-gradient(#E91E63 0deg, white 30deg, #E91E63 60deg, white 90deg, #E91E63 120deg, white 150deg, #E91E63 180deg, white 210deg, #E91E63 240deg, white 270deg, #E91E63 300deg, white 330deg, #E91E63 360deg); }
+        .lollipop-stick { width: 8px; height: 80px; background: #FFECB3; margin: 0 auto; border-radius: 0 0 4px 4px; }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="menu-screen" class="screen active">
+            <span class="logo-icon">✏️</span>
+            <h1 class="game-title">La Aventura de las Tildes</h1>
+            <p class="game-subtitle">con Capitulín</p>
+            <div class="menu-buttons">
+                <button class="btn btn-primary" onclick="showScreen('players-screen')">🎮 JUGAR</button>
+                <button class="btn btn-secondary" onclick="showScreen('instructions-screen')">📖 INSTRUCCIONES</button>
+            </div>
+        </div>
+        <div id="instructions-screen" class="screen">
+            <h2 class="screen-title">📖 Cómo Jugar</h2>
+            <div class="instructions-box">
+                <h3>🎯 Objetivo</h3>
+                <p>¡Persigue y atrapa la tilde que huye! Luego colócala en la palabra y clasifícala.</p>
+                <h3>🎮 Controles</h3>
+                <p><span class="key-icon">←</span> <span class="key-icon">→</span> Mover</p>
+                <p><span class="key-icon">↑</span> <span class="key-icon">↓</span> Escalera</p>
+                <p><span class="key-icon">Espacio</span> Saltar</p>
+                <h3>⚠️ ¡Cuidado!</h3>
+                <p>Esquiva los lápices enfadados.</p>
+            </div>
+            <button class="btn btn-primary" onclick="showScreen('menu-screen')">VOLVER</button>
+        </div>
+        <div id="players-screen" class="screen">
+            <h2 class="screen-title">¿Cuántos jugadores?</h2>
+            <div class="players-grid">
+                <div class="player-option" data-players="1" onclick="selectPlayers(1)"><span class="player-option-num">1</span><span class="player-option-label">Jugador</span></div>
+                <div class="player-option" data-players="2" onclick="selectPlayers(2)"><span class="player-option-num">2</span><span class="player-option-label">Jugadores</span></div>
+                <div class="player-option" data-players="3" onclick="selectPlayers(3)"><span class="player-option-num">3</span><span class="player-option-label">Jugadores</span></div>
+            </div>
+            <button class="btn btn-secondary" onclick="showScreen('menu-screen')">VOLVER</button>
+        </div>
+        <div id="mode-screen" class="screen">
+            <h2 class="screen-title">Elige el modo</h2>
+            <div class="mode-options">
+                <div class="mode-option" data-mode="competitive" onclick="selectMode('competitive')"><span class="mode-icon">⚔️</span><span class="mode-title">Competitivo</span><span class="mode-desc">Mayor puntuación gana</span></div>
+                <div class="mode-option" data-mode="cooperative" onclick="selectMode('cooperative')"><span class="mode-icon">🤝</span><span class="mode-title">Cooperativo</span><span class="mode-desc">Sumad puntos juntos</span></div>
+            </div>
+            <button class="btn btn-secondary" onclick="showScreen('players-screen')">VOLVER</button>
+        </div>
+        <div id="game-screen" class="screen">
+            <div class="game-hud">
+                <div class="hud-section">
+                    <div class="current-player" id="current-player-badge">J1</div>
+                    <div class="hud-item"><div class="lives-display" id="lives-display"><span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span></div></div>
+                </div>
+                <div class="hud-section">
+                    <div class="hud-item world-badge" id="world-badge">🏰 Castillo</div>
+                    <div class="hud-item">⭐ <span id="score-display">0</span></div>
+                    <div class="hud-item">📊 <span id="level-display">1/25</span></div>
+                </div>
+            </div>
+            <div class="collected-indicator" id="collected-indicator"><span>Tilde:</span><div class="collected-preview" id="collected-preview">á</div></div>
+            <div id="game-area"></div>
+            <div class="word-badge"><span class="word-badge-text" id="word-display">palabra</span></div>
+            <div class="touch-controls" id="touch-controls">
+                <div class="control-group"><button class="touch-btn" id="btn-left">◀</button><button class="touch-btn" id="btn-right">▶</button></div>
+                <div class="control-group"><button class="touch-btn" id="btn-up">▲</button><button class="touch-btn" id="btn-down">▼</button></div>
+                <div class="control-group"><button class="touch-btn touch-btn-jump" id="btn-jump">⬆</button></div>
+            </div>
+            <div class="modal-overlay" id="tilde-modal"><div class="modal-content"><div class="modal-title">¿Dónde va la tilde?</div><div class="modal-word" id="tilde-word"></div><button class="modal-btn" id="tilde-confirm-btn" onclick="confirmTildePlacement()" disabled>CONFIRMAR</button></div></div>
+            <div class="modal-overlay" id="classify-modal"><div class="modal-content"><div class="modal-title">¿Qué tipo de palabra es?</div><div class="modal-word" id="classify-word-display"></div><div class="classification-options" id="class-options"><button class="class-option" onclick="selectClassification('aguda')">AGUDA</button><button class="class-option" onclick="selectClassification('llana')">LLANA</button><button class="class-option" onclick="selectClassification('esdrujula')">ESDRÚJULA</button><button class="class-option" onclick="selectClassification('hiato')">HIATO</button></div><button class="modal-btn" id="class-confirm-btn" onclick="confirmClassification()" disabled>CONFIRMAR</button></div></div>
+            <div class="modal-overlay" id="diacritic-modal"><div class="modal-content"><div class="modal-title">Completa la frase</div><div class="diacritic-sentence" id="diacritic-sentence"></div><div class="diacritic-options" id="diacritic-options"></div></div></div>
+            <div class="feedback" id="feedback"></div>
+            <div class="world-intro" id="world-intro"><div class="world-intro-name" id="world-intro-name">🏰 Castillo</div><div class="world-intro-level" id="world-intro-level">Nivel 1</div></div>
+            <div class="transition-overlay" id="player-transition"><div class="transition-content"><div class="transition-title">¡Cambio de turno!</div><div class="transition-player" id="transition-player">Jugador 2</div><button class="btn btn-primary" onclick="continueAfterTransition()">¡LISTO!</button></div></div>
+            <div class="pause-overlay" id="pause-overlay"><div class="pause-title">⏸️ PAUSA</div><div class="menu-buttons"><button class="btn btn-primary" onclick="resumeGame()">CONTINUAR</button><button class="btn btn-secondary" onclick="quitToMenu()">SALIR</button></div></div>
+        </div>
+        <div id="results-screen" class="screen">
+            <h2 class="results-title">🏆 Resultados</h2>
+            <div id="results-content"></div>
+            <div class="menu-buttons"><button class="btn btn-primary" onclick="playAgain()">JUGAR DE NUEVO</button><button class="btn btn-secondary" onclick="showScreen('menu-screen')">MENÚ</button></div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
