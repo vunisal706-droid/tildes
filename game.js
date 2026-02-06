@@ -1,4 +1,119 @@
-// BANCO DE PALABRAS (~650 palabras)
+// ==================== SISTEMA DE SONIDO ====================
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+let soundEnabled = true;
+
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('sound-btn').textContent = soundEnabled ? '🔊' : '🔇';
+    if (soundEnabled) initAudio();
+}
+
+function playSound(type) {
+    if (!soundEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+    
+    const now = audioCtx.currentTime;
+    
+    switch(type) {
+        case 'jump':
+            playTone([400, 600], [0.1, 0.1], 'sine', 0.3);
+            break;
+        case 'collect':
+            playTone([523, 659, 784, 1047], [0.1, 0.1, 0.1, 0.2], 'sine', 0.4);
+            break;
+        case 'correct':
+            playTone([523, 659, 784], [0.15, 0.15, 0.3], 'sine', 0.5);
+            break;
+        case 'wrong':
+            playTone([300, 200], [0.2, 0.3], 'sawtooth', 0.3);
+            break;
+        case 'hit':
+            playNoise(0.15, 0.4);
+            playTone([200, 100], [0.1, 0.15], 'square', 0.3);
+            break;
+        case 'click':
+            playTone([800, 1000], [0.05, 0.05], 'sine', 0.2);
+            break;
+        case 'appear':
+            playTone([300, 500, 700], [0.08, 0.08, 0.15], 'sine', 0.3);
+            break;
+        case 'disappear':
+            playTone([600, 400, 200], [0.08, 0.08, 0.1], 'sine', 0.2);
+            break;
+        case 'levelup':
+            playTone([523, 659, 784, 1047, 1319], [0.12, 0.12, 0.12, 0.12, 0.4], 'sine', 0.5);
+            break;
+        case 'walk':
+            playTone([100, 120], [0.03, 0.03], 'triangle', 0.1);
+            break;
+    }
+}
+
+function playTone(frequencies, durations, waveType, volume) {
+    if (!audioCtx) return;
+    
+    const gainNode = audioCtx.createGain();
+    gainNode.connect(audioCtx.destination);
+    gainNode.gain.value = volume;
+    
+    let time = audioCtx.currentTime;
+    
+    frequencies.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        
+        osc.type = waveType;
+        osc.frequency.value = freq;
+        
+        osc.connect(oscGain);
+        oscGain.connect(gainNode);
+        
+        oscGain.gain.setValueAtTime(volume, time);
+        oscGain.gain.exponentialRampToValueAtTime(0.01, time + durations[i]);
+        
+        osc.start(time);
+        osc.stop(time + durations[i]);
+        
+        time += durations[i] * 0.7;
+    });
+}
+
+function playNoise(duration, volume) {
+    if (!audioCtx) return;
+    
+    const bufferSize = audioCtx.sampleRate * duration;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+    
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+    
+    noise.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    noise.start();
+}
+
+// ==================== BANCO DE PALABRAS ====================
 const WORD_BANK = {
     agudas: [
         {word:'cafe',correct:'café',type:'aguda'},{word:'sofa',correct:'sofá',type:'aguda'},{word:'mama',correct:'mamá',type:'aguda'},
@@ -77,17 +192,14 @@ const WORD_BANK = {
         {word:'termometro',correct:'termómetro',type:'esdrujula'},{word:'kilometro',correct:'kilómetro',type:'esdrujula'},{word:'musica',correct:'música',type:'esdrujula'},
         {word:'matematicas',correct:'matemáticas',type:'esdrujula'},{word:'gramatica',correct:'gramática',type:'esdrujula'},{word:'numero',correct:'número',type:'esdrujula'},
         {word:'espiritu',correct:'espíritu',type:'esdrujula'},{word:'capitulo',correct:'capítulo',type:'esdrujula'},{word:'titulo',correct:'título',type:'esdrujula'},
-        {word:'credito',correct:'crédito',type:'esdrujula'},{word:'debito',correct:'débito',type:'esdrujula'},{word:'codigo',correct:'código',type:'esdrujula'},
-        {word:'metodo',correct:'método',type:'esdrujula'},{word:'periodo',correct:'período',type:'esdrujula'},{word:'proposito',correct:'propósito',type:'esdrujula'},
-        {word:'simbolo',correct:'símbolo',type:'esdrujula'},{word:'estimulo',correct:'estímulo',type:'esdrujula'},{word:'angulo',correct:'ángulo',type:'esdrujula'},
-        {word:'musculo',correct:'músculo',type:'esdrujula'},{word:'calculo',correct:'cálculo',type:'esdrujula'},{word:'vinculo',correct:'vínculo',type:'esdrujula'},
-        {word:'obstaculo',correct:'obstáculo',type:'esdrujula'},{word:'curriculo',correct:'currículo',type:'esdrujula'},{word:'vehiculo',correct:'vehículo',type:'esdrujula'},
-        {word:'ridiculo',correct:'ridículo',type:'esdrujula'},{word:'pelicula',correct:'película',type:'esdrujula'},{word:'particula',correct:'partícula',type:'esdrujula'},
-        {word:'molecula',correct:'molécula',type:'esdrujula'},{word:'curicula',correct:'currícula',type:'esdrujula'},{word:'valvula',correct:'válvula',type:'esdrujula'},
-        {word:'celula',correct:'célula',type:'esdrujula'},{word:'formula',correct:'fórmula',type:'esdrujula'},{word:'ultima',correct:'última',type:'esdrujula'},
-        {word:'ultimo',correct:'último',type:'esdrujula'},{word:'proximo',correct:'próximo',type:'esdrujula'},{word:'maximo',correct:'máximo',type:'esdrujula'},
-        {word:'minimo',correct:'mínimo',type:'esdrujula'},{word:'optimo',correct:'óptimo',type:'esdrujula'},{word:'intimo',correct:'íntimo',type:'esdrujula'},
-        {word:'articulo',correct:'artículo',type:'esdrujula'},{word:'vehiculo',correct:'vehículo',type:'esdrujula'},{word:'obstaculo',correct:'obstáculo',type:'esdrujula'},
+        {word:'credito',correct:'crédito',type:'esdrujula'},{word:'codigo',correct:'código',type:'esdrujula'},{word:'metodo',correct:'método',type:'esdrujula'},
+        {word:'periodo',correct:'período',type:'esdrujula'},{word:'proposito',correct:'propósito',type:'esdrujula'},{word:'simbolo',correct:'símbolo',type:'esdrujula'},
+        {word:'estimulo',correct:'estímulo',type:'esdrujula'},{word:'angulo',correct:'ángulo',type:'esdrujula'},{word:'musculo',correct:'músculo',type:'esdrujula'},
+        {word:'calculo',correct:'cálculo',type:'esdrujula'},{word:'vinculo',correct:'vínculo',type:'esdrujula'},{word:'obstaculo',correct:'obstáculo',type:'esdrujula'},
+        {word:'curriculo',correct:'currículo',type:'esdrujula'},{word:'vehiculo',correct:'vehículo',type:'esdrujula'},{word:'particula',correct:'partícula',type:'esdrujula'},
+        {word:'valvula',correct:'válvula',type:'esdrujula'},{word:'ultima',correct:'última',type:'esdrujula'},{word:'ultimo',correct:'último',type:'esdrujula'},
+        {word:'proximo',correct:'próximo',type:'esdrujula'},{word:'maximo',correct:'máximo',type:'esdrujula'},{word:'minimo',correct:'mínimo',type:'esdrujula'},
+        {word:'optimo',correct:'óptimo',type:'esdrujula'},{word:'intimo',correct:'íntimo',type:'esdrujula'},{word:'articulo',correct:'artículo',type:'esdrujula'},
         {word:'espectaculo',correct:'espectáculo',type:'esdrujula'},{word:'circulo',correct:'círculo',type:'esdrujula'},{word:'triangulo',correct:'triángulo',type:'esdrujula'}
     ],
     hiatos: [
@@ -145,10 +257,12 @@ let gameState = {
 let player = {x:100,y:500,vx:0,vy:0,width:40,height:55,speed:5,jumpForce:-13,gravity:0.6,onGround:false,onLadder:false,isClimbing:false,facingRight:true};
 let platforms=[],ladders=[],activeTilde=null,enemies=[],keys={},touchStates={left:false,right:false,up:false,down:false,jump:false};
 let gameLoopId=null,enemySpawnInterval=null,tildeInterval=null;
+let lastWalkSound = 0;
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
 function selectPlayers(num){
+    playSound('click');
     gameState.numPlayers=num;
     document.querySelectorAll('.player-option').forEach(p=>p.classList.remove('selected'));
     document.querySelector(`[data-players="${num}"]`).classList.add('selected');
@@ -156,6 +270,7 @@ function selectPlayers(num){
 }
 
 function selectMode(mode){
+    playSound('click');
     gameState.mode=mode;
     document.querySelectorAll('.mode-option').forEach(m=>m.classList.remove('selected'));
     document.querySelector(`[data-mode="${mode}"]`).classList.add('selected');
@@ -163,6 +278,7 @@ function selectMode(mode){
 }
 
 function startGame(){
+    initAudio();
     gameState.players=[];
     for(let i=0;i<gameState.numPlayers;i++)gameState.players.push({name:`J${i+1}`,score:0,lives:3});
     gameState.currentPlayer=0;gameState.level=1;gameState.usedWords=new Set();gameState.wordsCompleted=0;gameState.isPlaying=true;
@@ -173,10 +289,14 @@ function startGame(){
 function getCurrentWorld(){for(let w of WORLDS)if(w.levels.includes(gameState.level))return w;return WORLDS[0];}
 
 function showWorldIntro(){
+    gameState.isPaused=true;
+    if(enemySpawnInterval){clearInterval(enemySpawnInterval);enemySpawnInterval=null;}
+    if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
     const world=getCurrentWorld();
     document.getElementById('world-intro-name').textContent=world.name;
     document.getElementById('world-intro-level').textContent=`Nivel ${gameState.level}`;
     document.getElementById('world-intro').classList.add('active');
+    playSound('levelup');
     setTimeout(()=>{document.getElementById('world-intro').classList.remove('active');initLevel();},2000);
 }
 
@@ -185,9 +305,9 @@ function initLevel(){
     platforms=[];ladders=[];activeTilde=null;enemies=[];
     if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
     const world=getCurrentWorld();
-    createWorldBackground(world);createPlatforms(world);createLadders();createGoalZone();selectNewWord();
-    player.x=100;player.y=520;player.vx=0;player.vy=0;gameState.collectedTilde=false;
-    createPlayerSprite();updateHUD();updateCollectedIndicator();
+    createWorldBackground(world);createPlatforms(world);createLadders();createGoalZone();
+    player.x=100;player.y=520;player.vx=0;player.vy=0;gameState.collectedTilde=false;gameState.isPaused=false;
+    createPlayerSprite();updateHUD();updateCollectedIndicator();selectNewWord();
     if(gameLoopId)cancelAnimationFrame(gameLoopId);gameLoop();startEnemySpawner();
 }
 
@@ -203,14 +323,27 @@ function createWorldBackground(world){
 }
 
 function createPlatforms(world){
-    const gameArea=document.getElementById('game-area');const gameWidth=gameArea.offsetWidth||900;
-    const configs=[
-        {y:580,x:0,width:gameWidth},
-        {y:460,x:80,width:gameWidth-130},
-        {y:340,x:50,width:gameWidth-100},
-        {y:220,x:80,width:gameWidth-130},
-        {y:100,x:150,width:gameWidth-300}
-    ];
+    const gameArea=document.getElementById('game-area');const gw=gameArea.offsetWidth||900;
+    let configs;
+    switch(world.id){
+        case 'castle':
+            configs=[{y:580,x:0,width:gw},{y:460,x:60,width:gw-120},{y:340,x:30,width:gw-60},{y:220,x:80,width:gw-160},{y:100,x:150,width:gw-300}];
+            break;
+        case 'forest':
+            configs=[{y:580,x:0,width:gw},{y:465,x:20,width:Math.floor(gw*0.55)},{y:350,x:Math.floor(gw*0.2),width:Math.floor(gw*0.75)},{y:240,x:Math.floor(gw*0.35),width:Math.floor(gw*0.55)},{y:110,x:Math.floor(gw*0.1),width:Math.floor(gw*0.65)}];
+            break;
+        case 'ocean':
+            configs=[{y:580,x:0,width:gw},{y:450,x:Math.floor(gw*0.25),width:Math.floor(gw*0.7)},{y:340,x:20,width:Math.floor(gw*0.6)},{y:215,x:Math.floor(gw*0.15),width:Math.floor(gw*0.7)},{y:95,x:Math.floor(gw*0.2),width:Math.floor(gw*0.55)}];
+            break;
+        case 'space':
+            configs=[{y:580,x:0,width:gw},{y:460,x:Math.floor(gw*0.3),width:Math.floor(gw*0.65)},{y:335,x:20,width:Math.floor(gw*0.55)},{y:210,x:Math.floor(gw*0.25),width:Math.floor(gw*0.65)},{y:90,x:Math.floor(gw*0.15),width:Math.floor(gw*0.6)}];
+            break;
+        case 'candy':
+            configs=[{y:580,x:0,width:gw},{y:475,x:40,width:gw-80},{y:365,x:Math.floor(gw*0.1),width:Math.floor(gw*0.75)},{y:250,x:20,width:Math.floor(gw*0.6)},{y:120,x:Math.floor(gw*0.15),width:Math.floor(gw*0.65)}];
+            break;
+        default:
+            configs=[{y:580,x:0,width:gw},{y:460,x:80,width:gw-130},{y:340,x:50,width:gw-100},{y:220,x:80,width:gw-130},{y:100,x:150,width:gw-300}];
+    }
     configs.forEach(c=>{
         const p=document.createElement('div');p.className=`platform ${world.platformClass}`;
         p.style.left=c.x+'px';p.style.top=c.y+'px';p.style.width=c.width+'px';
@@ -218,31 +351,27 @@ function createPlatforms(world){
     });
 }
 
-// ESCALERAS: Ahora hay más escaleras conectando todas las plataformas
+// ESCALERAS: Se generan automáticamente conectando plataformas consecutivas, bien separadas
 function createLadders(){
-    const gameArea=document.getElementById('game-area');const gameWidth=gameArea.offsetWidth||900;
-    // Escaleras entre suelo y plataforma 1
-    const configs=[
-        {x:gameWidth-120,y1:460,y2:580},
-        {x:200,y1:460,y2:580},
-        // Escaleras entre plataforma 1 y 2
-        {x:150,y1:340,y2:460},
-        {x:gameWidth-200,y1:340,y2:460},
-        {x:gameWidth/2,y1:340,y2:460},
-        // Escaleras entre plataforma 2 y 3
-        {x:gameWidth-180,y1:220,y2:340},
-        {x:250,y1:220,y2:340},
-        {x:gameWidth/2 + 100,y1:220,y2:340},
-        // Escaleras entre plataforma 3 y meta
-        {x:220,y1:100,y2:220},
-        {x:gameWidth-250,y1:100,y2:220},
-        {x:gameWidth/2 - 50,y1:100,y2:220}
-    ];
-    configs.forEach(c=>{
-        const l=document.createElement('div');l.className='ladder';
-        l.style.left=c.x+'px';l.style.top=c.y1+'px';l.style.height=(c.y2-c.y1)+'px';
-        gameArea.appendChild(l);ladders.push({x:c.x,y:c.y1,width:28,height:c.y2-c.y1});
-    });
+    const gameArea=document.getElementById('game-area');
+    for(let i=0;i<platforms.length-1;i++){
+        const top=platforms[i+1];
+        const bottom=platforms[i];
+        const overlapLeft=Math.max(top.x,bottom.x)+30;
+        const overlapRight=Math.min(top.x+top.width,bottom.x+bottom.width)-30;
+        if(overlapRight<=overlapLeft)continue;
+        const range=overlapRight-overlapLeft;
+        const numLadders=range>400?3:2;
+        // Distribuir: una al 15%, otra al 85% (2 escaleras) o al 15%, 50%, 85% (3 escaleras)
+        const positions=numLadders===3?[0.15,0.50,0.85]:[0.2,0.8];
+        positions.forEach(pct=>{
+            const x=overlapLeft+range*pct;
+            const l=document.createElement('div');l.className='ladder';
+            l.style.left=Math.floor(x)+'px';l.style.top=top.y+'px';l.style.height=(bottom.y-top.y)+'px';
+            gameArea.appendChild(l);
+            ladders.push({x:Math.floor(x),y:top.y,width:28,height:bottom.y-top.y});
+        });
+    }
 }
 
 function createGoalZone(){const g=document.createElement('div');g.className='goal-zone';g.textContent='🎯 META';document.getElementById('game-area').appendChild(g);}
@@ -277,24 +406,10 @@ function selectNewWord(){
 // CONFIGURACIÓN DE DIFICULTAD POR NIVEL
 function getTildeDifficulty(){
     const level = gameState.level;
-    // Nivel 1-5: Fácil
-    // Nivel 6-10: Medio
-    // Nivel 11-15: Difícil
-    // Nivel 16-20: Muy difícil
-    // Nivel 21-25: Experto
-    
-    // Tiempo visible (ms): empieza alto, va bajando
-    const visibleTime = Math.max(1500, 4000 - (level * 100));
-    
-    // Tiempo oculto (ms): empieza bajo, va subiendo un poco
-    const hiddenTime = Math.min(2500, 1000 + (level * 50));
-    
-    // Velocidad de movimiento
-    const speed = Math.min(6, 2 + (level * 0.15));
-    
-    // Velocidad de huida cuando el jugador se acerca
-    const fleeSpeed = Math.min(8, 4 + (level * 0.15));
-    
+    const visibleTime = Math.max(1800, 4500 - (level * 110));
+    const hiddenTime = Math.min(2200, 800 + (level * 55));
+    const speed = Math.min(5, 1.8 + (level * 0.12));
+    const fleeSpeed = Math.min(7, 3.5 + (level * 0.14));
     return { visibleTime, hiddenTime, speed, fleeSpeed };
 }
 
@@ -302,15 +417,41 @@ function getTildeDifficulty(){
 function startTildeSpawner(){
     if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
     if(gameState.collectedTilde || gameState.currentWord.type==='diacritica') return;
-    
     spawnTilde();
+}
+
+function createTildeHTML() {
+    return `
+        <div class="tilde-sparkles">
+            <div class="tilde-sparkle"></div>
+            <div class="tilde-sparkle"></div>
+            <div class="tilde-sparkle"></div>
+            <div class="tilde-sparkle"></div>
+        </div>
+        <div class="banana-tilde-body">
+            <div class="banana-tilde-inner"></div>
+            <div class="banana-tilde-highlight"></div>
+            <div class="banana-tilde-tip-top"></div>
+            <div class="banana-tilde-tip-bottom"></div>
+            <div class="banana-tilde-face">
+                <div class="banana-tilde-eyes">
+                    <div class="banana-tilde-eye"><div class="banana-tilde-pupil"></div></div>
+                    <div class="banana-tilde-eye"><div class="banana-tilde-pupil"></div></div>
+                </div>
+                <div class="banana-tilde-mouth"></div>
+            </div>
+        </div>
+        <div class="banana-tilde-legs">
+            <div class="banana-tilde-leg"><div class="banana-tilde-shoe"></div></div>
+            <div class="banana-tilde-leg"><div class="banana-tilde-shoe"></div></div>
+        </div>
+    `;
 }
 
 function spawnTilde(){
     if(gameState.collectedTilde || !gameState.isPlaying || gameState.isPaused) return;
     if(gameState.currentWord && gameState.currentWord.type==='diacritica') return;
     
-    // Eliminar tilde anterior si existe
     if(activeTilde && activeTilde.element){
         activeTilde.element.remove();
         activeTilde = null;
@@ -319,41 +460,35 @@ function spawnTilde(){
     const gameArea=document.getElementById('game-area');
     const difficulty = getTildeDifficulty();
     
-    // Crear el elemento de la tilde (solo el símbolo ´)
     const t=document.createElement('div');
-    t.className='tilde running';
-    t.innerHTML=`<div class="tilde-body"><div class="tilde-eyes"><div class="tilde-eye"></div><div class="tilde-eye"></div></div><span class="tilde-char">´</span></div><div class="tilde-legs"><div class="tilde-leg"></div><div class="tilde-leg"></div></div>`;
+    t.className='tilde-character running appearing';
+    t.innerHTML = createTildeHTML();
     
-    // Elegir plataforma aleatoria (no el suelo, no la meta)
-    const platIndex = 1 + Math.floor(Math.random() * 3); // Plataformas 1, 2 o 3
+    const platIndex = 1 + Math.floor(Math.random() * 3);
     const plat = platforms[platIndex];
     
-    // Posición aleatoria en la plataforma
-    const xPos = plat.x + 50 + Math.random() * (plat.width - 100);
+    const xPos = plat.x + 60 + Math.random() * (plat.width - 120);
     t.style.left = xPos + 'px';
-    t.style.top = (plat.y - 52) + 'px';
-    t.style.opacity = '0';
-    t.style.transition = 'opacity 0.3s ease';
+    t.style.top = (plat.y - 65) + 'px';
     
     gameArea.appendChild(t);
+    playSound('appear');
     
-    // Aparecer con animación
     setTimeout(() => {
-        t.style.opacity = '1';
-    }, 50);
+        t.classList.remove('appearing');
+    }, 500);
     
     activeTilde = {
         element: t,
         x: xPos,
-        y: plat.y - 52,
-        width: 44,
-        height: 52,
+        y: plat.y - 65,
+        width: 50,
+        height: 65,
         vx: (Math.random() > 0.5 ? 1 : -1) * difficulty.speed,
         platformIndex: platIndex,
         visible: true
     };
     
-    // Programar desaparición
     setTimeout(() => {
         hideTilde();
     }, difficulty.visibleTime);
@@ -362,15 +497,16 @@ function spawnTilde(){
 function hideTilde(){
     if(!activeTilde || gameState.collectedTilde) return;
     
-    // Desvanecer
+    playSound('disappear');
     if(activeTilde.element){
+        activeTilde.element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
         activeTilde.element.style.opacity = '0';
+        activeTilde.element.style.transform = 'scale(0.5)';
         setTimeout(() => {
             if(activeTilde && activeTilde.element){
                 activeTilde.element.remove();
                 activeTilde = null;
             }
-            // Programar reaparición en otra plataforma
             const difficulty = getTildeDifficulty();
             setTimeout(() => {
                 if(!gameState.collectedTilde && gameState.isPlaying && !gameState.isPaused){
@@ -383,7 +519,7 @@ function hideTilde(){
 
 function startEnemySpawner(){
     if(enemySpawnInterval)clearInterval(enemySpawnInterval);
-    const rate=Math.max(1800,4000-(gameState.level*80));
+    const rate=Math.max(2000,4500-(gameState.level*100));
     enemySpawnInterval=setInterval(()=>{if(!gameState.isPaused&&gameState.isPlaying)spawnEnemy();},rate);
 }
 
@@ -392,7 +528,7 @@ function spawnEnemy(){
     const e=document.createElement('div');e.className='enemy pencil-enemy falling';
     e.innerHTML=`<div class="pencil-top"></div><div class="pencil-body"><div class="pencil-face"><div class="pencil-brows"><div class="pencil-brow"></div><div class="pencil-brow"></div></div><div class="pencil-eyes"><div class="pencil-eye"></div><div class="pencil-eye"></div></div></div></div><div class="pencil-tip"></div>`;
     const x=80+Math.random()*(gameWidth-160);e.style.left=x+'px';e.style.top='-70px';gameArea.appendChild(e);
-    enemies.push({element:e,x:x,y:-70,width:18,height:70,vy:2.5+Math.random()*2+(gameState.level*0.15),vx:(Math.random()-0.5)*3});
+    enemies.push({element:e,x:x,y:-70,width:18,height:70,vy:2.5+Math.random()*2+(gameState.level*0.12),vx:(Math.random()-0.5)*3});
 }
 
 function gameLoop(){
@@ -413,7 +549,11 @@ function handleInput(){
         else if(keys['ArrowDown']||keys['KeyS']||touchStates.down){player.vy=ms*0.7;player.isClimbing=true;}
         else{player.vy=0;player.isClimbing=false;}
     }
-    if((keys['Space']||touchStates.jump)&&player.onGround&&!player.onLadder){player.vy=player.jumpForce;player.onGround=false;keys['Space']=false;touchStates.jump=false;}
+    if((keys['Space']||touchStates.jump)&&player.onGround&&!player.onLadder){
+        player.vy=player.jumpForce;player.onGround=false;
+        playSound('jump');
+        keys['Space']=false;touchStates.jump=false;
+    }
 }
 
 function updatePlayer(){
@@ -423,10 +563,19 @@ function updatePlayer(){
     const ga=document.getElementById('game-area');const gw=ga.offsetWidth||900;const gh=ga.offsetHeight||700;
     player.x=Math.max(0,Math.min(gw-player.width,player.x));player.y=Math.max(0,Math.min(gh-player.height,player.y));
     player.onGround=false;player.onLadder=false;
-    platforms.forEach(p=>{if(player.x+player.width>p.x&&player.x<p.x+p.width&&player.y+player.height>p.y&&player.y+player.height<p.y+p.height+15&&player.vy>=0){player.y=p.y-player.height;player.vy=0;player.onGround=true;}});
     ladders.forEach(l=>{if(player.x+player.width>l.x&&player.x<l.x+l.width&&player.y+player.height>l.y&&player.y<l.y+l.height)player.onLadder=true;});
+    const wantsClimbDown=player.onLadder&&(keys['ArrowDown']||keys['KeyS']||touchStates.down);
+    platforms.forEach(p=>{if(!wantsClimbDown&&player.x+player.width>p.x&&player.x<p.x+p.width&&player.y+player.height>p.y&&player.y+player.height<p.y+p.height+15&&player.vy>=0){player.y=p.y-player.height;player.vy=0;player.onGround=true;}});
     pe.style.left=player.x+'px';pe.style.top=player.y+'px';pe.style.transform=player.facingRight?'scaleX(1)':'scaleX(-1)';
-    pe.classList.toggle('walking',Math.abs(player.vx)>0.5&&player.onGround);
+    
+    const isWalking = Math.abs(player.vx)>0.5&&player.onGround;
+    pe.classList.toggle('walking',isWalking);
+    
+    // Sonido de pasos
+    if(isWalking && Date.now() - lastWalkSound > 250){
+        playSound('walk');
+        lastWalkSound = Date.now();
+    }
 }
 
 function updateTilde(){
@@ -435,10 +584,8 @@ function updateTilde(){
     const difficulty = getTildeDifficulty();
     const plat=platforms[activeTilde.platformIndex];
     
-    // Movimiento horizontal
     activeTilde.x+=activeTilde.vx;
     
-    // Rebotar en los bordes de la plataforma
     if(activeTilde.x<plat.x+10){
         activeTilde.x=plat.x+10;
         activeTilde.vx*=-1;
@@ -448,14 +595,11 @@ function updateTilde(){
         activeTilde.vx*=-1;
     }
     
-    // Huir del jugador si está cerca
     const dx=player.x-activeTilde.x,dy=player.y-activeTilde.y,dist=Math.sqrt(dx*dx+dy*dy);
-    if(dist<120){
-        // Huye más rápido según el nivel
+    if(dist<100){
         activeTilde.vx=(dx>0?-1:1)*difficulty.fleeSpeed;
     }else if(Math.abs(activeTilde.vx)>difficulty.speed){
-        // Volver a velocidad normal gradualmente
-        activeTilde.vx*=0.95;
+        activeTilde.vx*=0.96;
     }
     
     activeTilde.element.style.left=activeTilde.x+'px';
@@ -474,14 +618,17 @@ function updateEnemies(){
 function checkCollisions(){
     if(activeTilde&&!gameState.collectedTilde&&player.x<activeTilde.x+activeTilde.width&&player.x+player.width>activeTilde.x&&player.y<activeTilde.y+activeTilde.height&&player.y+player.height>activeTilde.y)collectTilde();
     enemies.forEach(e=>{if(player.x<e.x+e.width&&player.x+player.width>e.x&&player.y<e.y+e.height&&player.y+player.height>e.y)hitByEnemy();});
-    if(player.y<120&&gameState.collectedTilde)reachGoal();
+    const canReachGoal=gameState.collectedTilde||(gameState.currentWord&&gameState.currentWord.type==='diacritica');
+    if(player.y<120&&canReachGoal)reachGoal();
 }
 
 function collectTilde(){
     gameState.collectedTilde=true;
+    activeTilde.element.classList.remove('running');
     activeTilde.element.classList.add('collected');
+    playSound('collect');
     if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
-    setTimeout(()=>{if(activeTilde){activeTilde.element.remove();activeTilde=null;}},400);
+    setTimeout(()=>{if(activeTilde){activeTilde.element.remove();activeTilde=null;}},500);
     updateCollectedIndicator();
 }
 
@@ -493,6 +640,7 @@ function updateCollectedIndicator(){
 function reachGoal(){
     gameState.isPaused=true;const world=getCurrentWorld();
     if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+    playSound('click');
     if(world.id==='candy')showDiacriticModal();else showTildeModal();
 }
 
@@ -509,12 +657,14 @@ function showTildeModal(){
 }
 
 function selectVowel(el,idx){
+    playSound('click');
     document.querySelectorAll('#tilde-word .letter-box').forEach(l=>l.classList.remove('selected'));
     el.classList.add('selected');gameState.selectedVowelIndex=idx;document.getElementById('tilde-confirm-btn').disabled=false;
 }
 
 function confirmTildePlacement(){
     if(gameState.selectedVowelIndex<0)return;
+    playSound('click');
     const word=gameState.currentWord.data.word;const correct=gameState.currentWord.data.correct;
     const map={'a':'á','e':'é','i':'í','o':'ó','u':'ú'};
     let attempt='';for(let i=0;i<word.length;i++)attempt+=(i===gameState.selectedVowelIndex&&map[word[i].toLowerCase()])?map[word[i].toLowerCase()]:word[i];
@@ -530,6 +680,7 @@ function showClassifyModal(){
 }
 
 function selectClassification(type){
+    playSound('click');
     document.querySelectorAll('.class-option').forEach(o=>o.classList.remove('selected'));
     event.target.classList.add('selected');gameState.selectedClassification=type;document.getElementById('class-confirm-btn').disabled=false;
 }
@@ -538,9 +689,9 @@ function confirmClassification(){
     if(!gameState.selectedClassification)return;
     const correctType=gameState.currentWord.data.type;const classCorrect=gameState.selectedClassification===correctType;
     document.getElementById('classify-modal').classList.remove('active');
-    if(gameState.tildeCorrect&&classCorrect){showFeedback(true,'¡PERFECTO!');addScore(150);nextWord();}
-    else if(gameState.tildeCorrect){showFeedback(true,'¡BIEN! +50');addScore(50);nextWord();}
-    else{showFeedback(false,'¡INCORRECTO!');loseLife();}
+    if(gameState.tildeCorrect&&classCorrect){playSound('correct');showFeedback(true,'¡PERFECTO!');addScore(150);nextWord();}
+    else if(gameState.tildeCorrect){playSound('correct');showFeedback(true,'¡BIEN! +50');addScore(50);nextWord();}
+    else{playSound('wrong');showFeedback(false,'¡INCORRECTO!');loseLife();}
 }
 
 function showDiacriticModal(){
@@ -555,8 +706,8 @@ function showDiacriticModal(){
 
 function checkDiacriticAnswer(sel,cor){
     document.getElementById('diacritic-modal').classList.remove('active');
-    if(sel===cor){showFeedback(true,'¡CORRECTO!');addScore(100);nextWord();}
-    else{showFeedback(false,'¡INCORRECTO!');loseLife();}
+    if(sel===cor){playSound('correct');showFeedback(true,'¡CORRECTO!');addScore(100);nextWord();}
+    else{playSound('wrong');showFeedback(false,'¡INCORRECTO!');loseLife();}
 }
 
 function showFeedback(success,text){
@@ -569,9 +720,10 @@ function addScore(pts){gameState.players[gameState.currentPlayer].score+=pts;upd
 function nextWord(){
     gameState.wordsCompleted++;
     if(gameState.wordsCompleted>=gameState.wordsPerLevel){
+        const oldW=getCurrentWorld();
         gameState.level++;
         if(gameState.level>25)endGame();
-        else{const oldW=getCurrentWorld();const newW=WORLDS.find(w=>w.levels.includes(gameState.level));if(newW&&newW.id!==oldW.id)showWorldIntro();else{gameState.wordsCompleted=0;initLevel();}}
+        else{const newW=WORLDS.find(w=>w.levels.includes(gameState.level));if(newW&&newW.id!==oldW.id){gameState.wordsCompleted=0;showWorldIntro();}else{gameState.wordsCompleted=0;initLevel();}}
     }else resetForNextWord();
 }
 
@@ -582,7 +734,10 @@ function resetForNextWord(){
     updateCollectedIndicator();selectNewWord();
 }
 
-function hitByEnemy(){loseLife();}
+function hitByEnemy(){
+    playSound('hit');
+    loseLife();
+}
 
 function loseLife(){
     gameState.players[gameState.currentPlayer].lives--;updateHUD();
@@ -598,7 +753,10 @@ function switchPlayer(){
     document.getElementById('player-transition').classList.add('active');gameState.isPaused=true;
 }
 
-function continueAfterTransition(){document.getElementById('player-transition').classList.remove('active');gameState.isPaused=false;resetPlayerPosition();updateHUD();}
+function continueAfterTransition(){
+    playSound('click');
+    document.getElementById('player-transition').classList.remove('active');gameState.isPaused=false;resetPlayerPosition();updateHUD();
+}
 
 function resetPlayerPosition(){
     player.x=100;player.y=520;player.vx=0;player.vy=0;gameState.collectedTilde=false;gameState.isPaused=false;updateCollectedIndicator();
@@ -613,6 +771,7 @@ function endGame(){
     if(enemySpawnInterval)clearInterval(enemySpawnInterval);
     if(tildeInterval)clearInterval(tildeInterval);
     if(gameLoopId)cancelAnimationFrame(gameLoopId);
+    playSound('levelup');
     showResults();
 }
 
@@ -648,10 +807,12 @@ function pauseGame(){
     document.getElementById('pause-overlay').classList.add('active');
 }
 function resumeGame(){
+    playSound('click');
     gameState.isPaused=false;
     document.getElementById('pause-overlay').classList.remove('active');
 }
 function quitToMenu(){
+    playSound('click');
     gameState.isPlaying=false;
     if(enemySpawnInterval)clearInterval(enemySpawnInterval);
     if(tildeInterval)clearInterval(tildeInterval);
@@ -659,7 +820,10 @@ function quitToMenu(){
     document.getElementById('pause-overlay').classList.remove('active');
     showScreen('menu-screen');
 }
-function playAgain(){showScreen('players-screen');}
+function playAgain(){
+    playSound('click');
+    showScreen('players-screen');
+}
 
 document.addEventListener('keydown',e=>{
     keys[e.code]=true;
@@ -686,3 +850,7 @@ function setupTouchControls(){
 }
 document.addEventListener('DOMContentLoaded',setupTouchControls);
 document.addEventListener('touchmove',e=>{if(e.scale!==1)e.preventDefault();},{passive:false});
+
+// Inicializar audio con el primer clic
+document.addEventListener('click', initAudio, { once: true });
+document.addEventListener('touchstart', initAudio, { once: true });

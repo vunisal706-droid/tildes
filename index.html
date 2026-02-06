@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>La Aventura de las Tildes - Capitulín</title>
+    <title>La Aventura de las Tildes - CEIP Capitulaciones</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,7 +42,12 @@
             font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 7vw, 3.5rem);
             color: white; text-shadow: 4px 4px 0 rgba(0,0,0,0.2); text-align: center; margin-bottom: 5px;
         }
-        .game-subtitle { font-size: 1.3rem; color: var(--accent); margin-bottom: 40px; font-weight: 600; }
+        .game-subtitle { font-size: 1.3rem; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
+        .school-name { 
+            font-size: 1rem; color: white; margin-bottom: 30px; font-weight: 700; 
+            background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 20px;
+            letter-spacing: 1px;
+        }
         .logo-icon { font-size: 4rem; display: block; margin-bottom: 20px; animation: logoFloat 3s ease-in-out infinite; }
         @keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .menu-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; }
@@ -148,18 +153,271 @@
         .player.walking .player-arm:last-child { animation: armSwing 0.25s ease-in-out infinite; }
         @keyframes legWalk { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
         @keyframes armSwing { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } }
-        .tilde { position: absolute; width: 44px; height: 52px; z-index: 15; cursor: pointer; }
-        .tilde-body { width: 44px; height: 44px; background: linear-gradient(135deg, #FFD54F 0%, #FFC107 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: relative; }
-        .tilde-char { font-family: 'Nunito', sans-serif; font-size: 1.6rem; font-weight: 900; color: var(--dark); }
-        .tilde-eyes { position: absolute; top: 8px; display: flex; gap: 8px; }
-        .tilde-eye { width: 5px; height: 6px; background: #333; border-radius: 50%; }
-        .tilde-legs { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; }
-        .tilde-leg { width: 6px; height: 10px; background: #FFA000; border-radius: 0 0 3px 3px; }
-        .tilde.running .tilde-leg:first-child { animation: tildeLegRun 0.15s ease-in-out infinite; }
-        .tilde.running .tilde-leg:last-child { animation: tildeLegRun 0.15s ease-in-out infinite reverse; }
-        @keyframes tildeLegRun { 0%, 100% { transform: rotate(-30deg); } 50% { transform: rotate(30deg); } }
-        .tilde.collected { animation: tildeCollected 0.4s ease forwards; }
-        @keyframes tildeCollected { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3) rotate(15deg); } 100% { transform: scale(0); opacity: 0; } }
+        
+        /* ========== PERSONAJE TILDE - PLÁTANO MEDIA LUNA ========== */
+        .tilde-character {
+            position: absolute;
+            width: 50px;
+            height: 65px;
+            z-index: 15;
+            cursor: pointer;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Cuerpo del plátano - media luna lateral */
+        .banana-tilde-body {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 44px;
+            height: 36px;
+            background: linear-gradient(160deg, #FFE082 0%, #FFD54F 20%, #FFCA28 50%, #FFB300 80%, #E8A317 100%);
+            border-radius: 80% 10% 10% 80% / 50% 40% 40% 50%;
+            border: 2.5px solid #C68A0A;
+            box-shadow: inset -4px -2px 8px rgba(0,0,0,0.12), inset 4px 3px 6px rgba(255,255,255,0.35);
+            overflow: visible;
+        }
+        
+        /* Línea interior del plátano */
+        .banana-tilde-inner {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 10px;
+            height: 22px;
+            border-left: 2px solid rgba(198,138,10,0.3);
+            border-radius: 70% 0% 0% 70% / 50% 0% 0% 50%;
+        }
+        
+        /* Brillo lateral */
+        .banana-tilde-highlight {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 6px;
+            height: 20px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 50%;
+            transform: rotate(-10deg);
+        }
+        
+        /* Punta superior (rabito) */
+        .banana-tilde-tip-top {
+            position: absolute;
+            top: -6px;
+            left: 2px;
+            width: 10px;
+            height: 8px;
+            background: #8B6914;
+            border-radius: 50% 50% 20% 60%;
+            transform: rotate(-30deg);
+        }
+        
+        /* Punta inferior */
+        .banana-tilde-tip-bottom {
+            position: absolute;
+            bottom: -4px;
+            right: 0px;
+            width: 9px;
+            height: 7px;
+            background: #A67C00;
+            border-radius: 60% 20% 50% 50%;
+            transform: rotate(15deg);
+        }
+        
+        /* Cara del plátano */
+        .banana-tilde-face {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-45%);
+            width: 36px;
+            height: 28px;
+        }
+        
+        /* Ojos */
+        .banana-tilde-eyes {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        
+        .banana-tilde-eye {
+            width: 11px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: inset 0 -2px 3px rgba(0,0,0,0.1);
+            border: 2px solid #5D4037;
+        }
+        
+        .banana-tilde-pupil {
+            position: absolute;
+            width: 5px;
+            height: 6px;
+            background: #1a1a2e;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            animation: tildeLook 3s ease-in-out infinite;
+        }
+        
+        .banana-tilde-pupil::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+        }
+        
+        @keyframes tildeLook {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(2px); }
+            75% { transform: translateX(-2px); }
+        }
+        
+        /* Sonrisa traviesa */
+        .banana-tilde-mouth {
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 8px;
+            border: 2.5px solid #5D4037;
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            background: #FF7043;
+        }
+        
+        /* Piernas del plátano */
+        .banana-tilde-legs {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        
+        .banana-tilde-leg {
+            width: 10px;
+            height: 18px;
+            background: linear-gradient(180deg, #FFCA28 0%, #FFB300 100%);
+            border-radius: 5px 5px 6px 6px;
+            position: relative;
+            border: 2px solid #C68A0A;
+            box-shadow: inset 2px 0 3px rgba(255,255,255,0.3);
+        }
+        
+        .banana-tilde-shoe {
+            position: absolute;
+            bottom: -4px;
+            left: -3px;
+            width: 16px;
+            height: 9px;
+            background: linear-gradient(180deg, #6D4C41 0%, #5D4037 100%);
+            border-radius: 5px 9px 4px 4px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+            border: 1px solid #4E342E;
+        }
+        
+        .banana-tilde-shoe::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 5px;
+            height: 2px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        
+        /* Animación de correr */
+        .tilde-character.running .banana-tilde-leg:first-child {
+            animation: tildeRunLeg 0.18s ease-in-out infinite;
+        }
+        .tilde-character.running .banana-tilde-leg:last-child {
+            animation: tildeRunLeg 0.18s ease-in-out infinite reverse;
+        }
+        
+        @keyframes tildeRunLeg {
+            0%, 100% { transform: rotate(-30deg) translateY(-2px); }
+            50% { transform: rotate(30deg) translateY(0); }
+        }
+        
+        /* Efecto de rebote al correr */
+        .tilde-character.running .banana-tilde-body {
+            animation: tildeBounce 0.18s ease-in-out infinite;
+        }
+        
+        @keyframes tildeBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-4px); }
+        }
+        
+        /* Animación de recolección */
+        .tilde-character.collected {
+            animation: tildeCollected 0.5s ease forwards;
+        }
+        
+        @keyframes tildeCollected {
+            0% { transform: scale(1) rotate(0); opacity: 1; }
+            30% { transform: scale(1.4) rotate(-15deg); }
+            60% { transform: scale(1.5) rotate(15deg); }
+            100% { transform: scale(0) rotate(720deg); opacity: 0; }
+        }
+        
+        /* Aparición con efecto mágico */
+        .tilde-character.appearing {
+            animation: tildeAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        @keyframes tildeAppear {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; filter: brightness(2); }
+            60% { transform: scale(1.3) rotate(15deg); filter: brightness(1.5); }
+            100% { transform: scale(1) rotate(0); opacity: 1; filter: brightness(1); }
+        }
+        
+        /* Partículas de brillo alrededor */
+        .tilde-sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .tilde-sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #FFE082 0%, #FFD54F 100%);
+            border-radius: 50%;
+            animation: sparkle 1.2s ease-in-out infinite;
+            box-shadow: 0 0 4px #FFD54F;
+        }
+        
+        .tilde-sparkle:nth-child(1) { top: -8px; left: 15px; animation-delay: 0s; }
+        .tilde-sparkle:nth-child(2) { top: 0px; right: -5px; animation-delay: 0.3s; }
+        .tilde-sparkle:nth-child(3) { bottom: 25px; left: -5px; animation-delay: 0.6s; }
+        .tilde-sparkle:nth-child(4) { top: 10px; right: -8px; animation-delay: 0.9s; }
+        
+        @keyframes sparkle {
+            0%, 100% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        /* ========== FIN PERSONAJE TILDE ========== */
+        
         .enemy { position: absolute; z-index: 18; }
         .pencil-enemy { width: 18px; height: 55px; }
         .pencil-body { width: 100%; height: 40px; background: linear-gradient(90deg, #FDD835 0%, #FFEB3B 30%, #FDD835 70%, #F9A825 100%); border-radius: 3px; position: relative; }
@@ -249,6 +507,29 @@
         .lollipop { position: absolute; bottom: 0; }
         .lollipop-candy { width: 50px; height: 50px; border-radius: 50%; background: conic-gradient(#E91E63 0deg, white 30deg, #E91E63 60deg, white 90deg, #E91E63 120deg, white 150deg, #E91E63 180deg, white 210deg, #E91E63 240deg, white 270deg, #E91E63 300deg, white 330deg, #E91E63 360deg); }
         .lollipop-stick { width: 8px; height: 80px; background: #FFECB3; margin: 0 auto; border-radius: 0 0 4px 4px; }
+        
+        /* Botón de sonido */
+        .sound-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: all 0.2s ease;
+        }
+        .sound-toggle:hover {
+            background: rgba(255,255,255,0.35);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -257,24 +538,26 @@
             <span class="logo-icon">✏️</span>
             <h1 class="game-title">La Aventura de las Tildes</h1>
             <p class="game-subtitle">con Capitulín</p>
+            <p class="school-name">🦊 CEIP CAPITULACIONES 🦊</p>
             <div class="menu-buttons">
-                <button class="btn btn-primary" onclick="showScreen('players-screen')">🎮 JUGAR</button>
-                <button class="btn btn-secondary" onclick="showScreen('instructions-screen')">📖 INSTRUCCIONES</button>
+                <button class="btn btn-primary" onclick="showScreen('players-screen'); playSound('click');">🎮 JUGAR</button>
+                <button class="btn btn-secondary" onclick="showScreen('instructions-screen'); playSound('click');">📖 INSTRUCCIONES</button>
             </div>
+            <button class="sound-toggle" onclick="toggleSound()" id="sound-btn">🔊</button>
         </div>
         <div id="instructions-screen" class="screen">
             <h2 class="screen-title">📖 Cómo Jugar</h2>
             <div class="instructions-box">
                 <h3>🎯 Objetivo</h3>
-                <p>¡Persigue y atrapa la tilde que huye! Luego colócala en la palabra y clasifícala.</p>
+                <p>¡Persigue y atrapa la tilde que huye! Aparece y desaparece por las plataformas. Luego colócala en la palabra y clasifícala.</p>
                 <h3>🎮 Controles</h3>
                 <p><span class="key-icon">←</span> <span class="key-icon">→</span> Mover</p>
-                <p><span class="key-icon">↑</span> <span class="key-icon">↓</span> Escalera</p>
+                <p><span class="key-icon">↑</span> <span class="key-icon">↓</span> Subir/Bajar escalera</p>
                 <p><span class="key-icon">Espacio</span> Saltar</p>
                 <h3>⚠️ ¡Cuidado!</h3>
-                <p>Esquiva los lápices enfadados.</p>
+                <p>Esquiva los lápices enfadados que caen.</p>
             </div>
-            <button class="btn btn-primary" onclick="showScreen('menu-screen')">VOLVER</button>
+            <button class="btn btn-primary" onclick="showScreen('menu-screen'); playSound('click');">VOLVER</button>
         </div>
         <div id="players-screen" class="screen">
             <h2 class="screen-title">¿Cuántos jugadores?</h2>
@@ -283,7 +566,7 @@
                 <div class="player-option" data-players="2" onclick="selectPlayers(2)"><span class="player-option-num">2</span><span class="player-option-label">Jugadores</span></div>
                 <div class="player-option" data-players="3" onclick="selectPlayers(3)"><span class="player-option-num">3</span><span class="player-option-label">Jugadores</span></div>
             </div>
-            <button class="btn btn-secondary" onclick="showScreen('menu-screen')">VOLVER</button>
+            <button class="btn btn-secondary" onclick="showScreen('menu-screen'); playSound('click');">VOLVER</button>
         </div>
         <div id="mode-screen" class="screen">
             <h2 class="screen-title">Elige el modo</h2>
@@ -291,7 +574,7 @@
                 <div class="mode-option" data-mode="competitive" onclick="selectMode('competitive')"><span class="mode-icon">⚔️</span><span class="mode-title">Competitivo</span><span class="mode-desc">Mayor puntuación gana</span></div>
                 <div class="mode-option" data-mode="cooperative" onclick="selectMode('cooperative')"><span class="mode-icon">🤝</span><span class="mode-title">Cooperativo</span><span class="mode-desc">Sumad puntos juntos</span></div>
             </div>
-            <button class="btn btn-secondary" onclick="showScreen('players-screen')">VOLVER</button>
+            <button class="btn btn-secondary" onclick="showScreen('players-screen'); playSound('click');">VOLVER</button>
         </div>
         <div id="game-screen" class="screen">
             <div class="game-hud">
@@ -305,7 +588,7 @@
                     <div class="hud-item">📊 <span id="level-display">1/25</span></div>
                 </div>
             </div>
-            <div class="collected-indicator" id="collected-indicator"><span>Tilde:</span><div class="collected-preview" id="collected-preview">á</div></div>
+            <div class="collected-indicator" id="collected-indicator"><span>Tilde:</span><div class="collected-preview" id="collected-preview">´</div></div>
             <div id="game-area"></div>
             <div class="word-badge"><span class="word-badge-text" id="word-display">palabra</span></div>
             <div class="touch-controls" id="touch-controls">
