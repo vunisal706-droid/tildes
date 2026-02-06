@@ -326,23 +326,61 @@ function createPlatforms(world){
     const gameArea=document.getElementById('game-area');const gw=gameArea.offsetWidth||900;
     let configs;
     switch(world.id){
-        case 'castle':
-            configs=[{y:580,x:0,width:gw},{y:460,x:60,width:gw-120},{y:340,x:30,width:gw-60},{y:220,x:80,width:gw-160},{y:100,x:150,width:gw-300}];
+        case 'castle': // Torre: plataformas centradas, cada vez más estrechas
+            configs=[
+                {y:580,x:0,width:gw},
+                {y:460,x:40,width:gw-80},
+                {y:340,x:100,width:gw-200},
+                {y:220,x:160,width:gw-320},
+                {y:100,x:220,width:gw-440}
+            ];
             break;
-        case 'forest':
-            configs=[{y:580,x:0,width:gw},{y:465,x:20,width:Math.floor(gw*0.55)},{y:350,x:Math.floor(gw*0.2),width:Math.floor(gw*0.75)},{y:240,x:Math.floor(gw*0.35),width:Math.floor(gw*0.55)},{y:110,x:Math.floor(gw*0.1),width:Math.floor(gw*0.65)}];
+        case 'forest': // Zigzag: plataformas alternas izquierda-derecha
+            configs=[
+                {y:580,x:0,width:gw},
+                {y:455,x:0,width:Math.floor(gw*0.55)},
+                {y:340,x:Math.floor(gw*0.4),width:Math.floor(gw*0.6)},
+                {y:225,x:0,width:Math.floor(gw*0.5)},
+                {y:105,x:Math.floor(gw*0.35),width:Math.floor(gw*0.55)}
+            ];
             break;
-        case 'ocean':
-            configs=[{y:580,x:0,width:gw},{y:450,x:Math.floor(gw*0.25),width:Math.floor(gw*0.7)},{y:340,x:20,width:Math.floor(gw*0.6)},{y:215,x:Math.floor(gw*0.15),width:Math.floor(gw*0.7)},{y:95,x:Math.floor(gw*0.2),width:Math.floor(gw*0.55)}];
+        case 'ocean': // Islas: plataformas cortas y separadas, 2 por nivel en algunos
+            configs=[
+                {y:580,x:0,width:gw},
+                {y:460,x:20,width:Math.floor(gw*0.35)},
+                {y:460,x:Math.floor(gw*0.55),width:Math.floor(gw*0.42)},
+                {y:330,x:Math.floor(gw*0.15),width:Math.floor(gw*0.7)},
+                {y:210,x:Math.floor(gw*0.05),width:Math.floor(gw*0.38)},
+                {y:210,x:Math.floor(gw*0.52),width:Math.floor(gw*0.42)},
+                {y:95,x:Math.floor(gw*0.2),width:Math.floor(gw*0.55)}
+            ];
             break;
-        case 'space':
-            configs=[{y:580,x:0,width:gw},{y:460,x:Math.floor(gw*0.3),width:Math.floor(gw*0.65)},{y:335,x:20,width:Math.floor(gw*0.55)},{y:210,x:Math.floor(gw*0.25),width:Math.floor(gw*0.65)},{y:90,x:Math.floor(gw*0.15),width:Math.floor(gw*0.6)}];
+        case 'space': // Escalera diagonal ascendente de izquierda a derecha
+            configs=[
+                {y:580,x:0,width:gw},
+                {y:465,x:0,width:Math.floor(gw*0.45)},
+                {y:355,x:Math.floor(gw*0.2),width:Math.floor(gw*0.45)},
+                {y:240,x:Math.floor(gw*0.4),width:Math.floor(gw*0.45)},
+                {y:115,x:Math.floor(gw*0.25),width:Math.floor(gw*0.55)}
+            ];
             break;
-        case 'candy':
-            configs=[{y:580,x:0,width:gw},{y:475,x:40,width:gw-80},{y:365,x:Math.floor(gw*0.1),width:Math.floor(gw*0.75)},{y:250,x:20,width:Math.floor(gw*0.6)},{y:120,x:Math.floor(gw*0.15),width:Math.floor(gw*0.65)}];
+        case 'candy': // Embudo invertido: estrechas abajo, anchas arriba
+            configs=[
+                {y:580,x:0,width:gw},
+                {y:465,x:Math.floor(gw*0.25),width:Math.floor(gw*0.5)},
+                {y:350,x:Math.floor(gw*0.12),width:Math.floor(gw*0.65)},
+                {y:230,x:Math.floor(gw*0.05),width:Math.floor(gw*0.8)},
+                {y:110,x:20,width:gw-40}
+            ];
             break;
         default:
-            configs=[{y:580,x:0,width:gw},{y:460,x:80,width:gw-130},{y:340,x:50,width:gw-100},{y:220,x:80,width:gw-130},{y:100,x:150,width:gw-300}];
+            configs=[
+                {y:580,x:0,width:gw},
+                {y:460,x:80,width:gw-130},
+                {y:340,x:50,width:gw-100},
+                {y:220,x:80,width:gw-130},
+                {y:100,x:150,width:gw-300}
+            ];
     }
     configs.forEach(c=>{
         const p=document.createElement('div');p.className=`platform ${world.platformClass}`;
@@ -351,30 +389,48 @@ function createPlatforms(world){
     });
 }
 
-// ESCALERAS: Se generan automáticamente conectando plataformas consecutivas, bien separadas
+// ESCALERAS: Conectan plataformas consecutivas por altura, alternando posiciones
 function createLadders(){
     const gameArea=document.getElementById('game-area');
-    for(let i=0;i<platforms.length-1;i++){
-        const top=platforms[i+1];
-        const bottom=platforms[i];
-        const overlapLeft=Math.max(top.x,bottom.x)+30;
-        const overlapRight=Math.min(top.x+top.width,bottom.x+bottom.width)-30;
-        if(overlapRight<=overlapLeft)continue;
-        const range=overlapRight-overlapLeft;
-        const numLadders=range>400?3:2;
-        // Distribuir: una al 15%, otra al 85% (2 escaleras) o al 15%, 50%, 85% (3 escaleras)
-        const positions=numLadders===3?[0.15,0.50,0.85]:[0.2,0.8];
-        positions.forEach(pct=>{
-            const x=overlapLeft+range*pct;
-            const l=document.createElement('div');l.className='ladder';
-            l.style.left=Math.floor(x)+'px';l.style.top=top.y+'px';l.style.height=(bottom.y-top.y)+'px';
-            gameArea.appendChild(l);
-            ladders.push({x:Math.floor(x),y:top.y,width:28,height:bottom.y-top.y});
+    // Agrupar plataformas por altura (de abajo a arriba)
+    const heights=[...new Set(platforms.map(p=>p.y))].sort((a,b)=>b-a);
+    for(let h=0;h<heights.length-1;h++){
+        const bottomPlats=platforms.filter(p=>p.y===heights[h]);
+        const topPlats=platforms.filter(p=>p.y===heights[h+1]);
+        // Para cada par de plataformas que se solapan horizontalmente, poner escaleras
+        bottomPlats.forEach(bp=>{
+            topPlats.forEach(tp=>{
+                const overlapLeft=Math.max(tp.x,bp.x)+25;
+                const overlapRight=Math.min(tp.x+tp.width,bp.x+bp.width)-25;
+                if(overlapRight-overlapLeft<40)return;
+                const range=overlapRight-overlapLeft;
+                // Alternar posición según el nivel de altura (izq o dcha)
+                const side=(h%2===0);
+                let positions;
+                if(range>350){
+                    positions=side?[0.15,0.75]:[0.25,0.85];
+                }else{
+                    positions=side?[0.25]:[0.75];
+                }
+                positions.forEach(pct=>{
+                    const x=overlapLeft+range*pct;
+                    const l=document.createElement('div');l.className='ladder';
+                    l.style.left=Math.floor(x)+'px';l.style.top=tp.y+'px';l.style.height=(bp.y-tp.y)+'px';
+                    gameArea.appendChild(l);
+                    ladders.push({x:Math.floor(x),y:tp.y,width:28,height:bp.y-tp.y});
+                });
+            });
         });
     }
 }
 
-function createGoalZone(){const g=document.createElement('div');g.className='goal-zone';g.textContent='🎯 META';document.getElementById('game-area').appendChild(g);}
+function createGoalZone(){
+    const topPlat=platforms.reduce((min,p)=>p.y<min.y?p:min,platforms[0]);
+    const g=document.createElement('div');g.className='goal-zone';g.textContent='🎯 META';
+    g.style.top=(topPlat.y-35)+'px';
+    document.getElementById('game-area').appendChild(g);
+    gameState.goalY=topPlat.y;
+}
 
 function createPlayerSprite(){
     const gameArea=document.getElementById('game-area');
@@ -464,7 +520,11 @@ function spawnTilde(){
     t.className='tilde-character running appearing';
     t.innerHTML = createTildeHTML();
     
-    const platIndex = 1 + Math.floor(Math.random() * 3);
+    // Spawn en plataformas intermedias (no suelo ni la más alta)
+    const midPlatforms=[];
+    for(let i=1;i<platforms.length-1;i++)midPlatforms.push(i);
+    if(midPlatforms.length===0)midPlatforms.push(1);
+    const platIndex=midPlatforms[Math.floor(Math.random()*midPlatforms.length)];
     const plat = platforms[platIndex];
     
     const xPos = plat.x + 60 + Math.random() * (plat.width - 120);
@@ -619,7 +679,8 @@ function checkCollisions(){
     if(activeTilde&&!gameState.collectedTilde&&player.x<activeTilde.x+activeTilde.width&&player.x+player.width>activeTilde.x&&player.y<activeTilde.y+activeTilde.height&&player.y+player.height>activeTilde.y)collectTilde();
     enemies.forEach(e=>{if(player.x<e.x+e.width&&player.x+player.width>e.x&&player.y<e.y+e.height&&player.y+player.height>e.y)hitByEnemy();});
     const canReachGoal=gameState.collectedTilde||(gameState.currentWord&&gameState.currentWord.type==='diacritica');
-    if(player.y<120&&canReachGoal)reachGoal();
+    const goalThreshold=(gameState.goalY||120)+20;
+    if(player.y<goalThreshold&&canReachGoal)reachGoal();
 }
 
 function collectTilde(){
