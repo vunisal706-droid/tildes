@@ -122,18 +122,128 @@
         .word-badge-text { font-size: 1.4rem; font-weight: 800; color: white; letter-spacing: 2px; }
         #game-area { width: 100%; height: 100%; position: relative; overflow: hidden; }
         .world-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        
+        /* CASTILLO - Gótico oscuro */
         .bg-castle { background: linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #24243e 100%); }
+        .castle-tower { position: absolute; bottom: 0; width: 80px; height: 200px; background: linear-gradient(90deg, #2d2d2d 0%, #1a1a1a 50%, #2d2d2d 100%); clip-path: polygon(20% 100%, 20% 30%, 50% 0%, 80% 30%, 80% 100%); }
+        .castle-window { position: absolute; width: 15px; height: 25px; background: #FFD700; border-radius: 50% 50% 0 0; box-shadow: 0 0 20px #FFD700; animation: windowFlicker 3s ease-in-out infinite; }
+        @keyframes windowFlicker { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+        
+        /* BOSQUE - Natural y orgánico */
         .bg-forest { background: linear-gradient(180deg, #87CEEB 0%, #98D8AA 40%, #1B4D3E 100%); }
+        .tree { position: absolute; bottom: 0; width: 60px; height: 150px; background: linear-gradient(90deg, #5D4037 0%, #3E2723 100%); border-radius: 10px; }
+        .tree::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 120px; height: 100px; background: #2E7D32; border-radius: 50%; }
+        .tree::after { content: ''; position: absolute; top: -60px; left: 30%; width: 80px; height: 80px; background: #388E3C; border-radius: 50%; }
+        
+        /* OCÉANO - Submarino */
         .bg-ocean { background: linear-gradient(180deg, #4FC3F7 0%, #0288D1 30%, #01579B 70%, #002f6c 100%); }
+        .coral { position: absolute; bottom: 0; width: 40px; height: 80px; background: linear-gradient(180deg, #FF7043 0%, #E64A19 100%); border-radius: 20px 20px 0 0; animation: coralSway 4s ease-in-out infinite; }
+        @keyframes coralSway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+        .seaweed { position: absolute; bottom: 0; width: 20px; height: 100px; background: linear-gradient(180deg, #66BB6A 0%, #2E7D32 100%); border-radius: 50% 50% 0 0; animation: seaweedWave 3s ease-in-out infinite; }
+        @keyframes seaweedWave { 0%, 100% { transform: rotate(-10deg) scaleX(1); } 50% { transform: rotate(10deg) scaleX(0.8); } }
+        
+        /* ESPACIO - Cósmico */
         .bg-space { background: linear-gradient(180deg, #0d0d2b 0%, #1a1a4e 50%, #2d1b4e 100%); }
+        .planet-bg { position: absolute; border-radius: 50%; box-shadow: inset -20px -20px 40px rgba(0,0,0,0.5); }
+        .asteroid { position: absolute; width: 30px; height: 25px; background: #795548; border-radius: 40% 60% 50% 40%; animation: asteroidFloat 20s linear infinite; }
+        @keyframes asteroidFloat { 0% { transform: translateX(-50px) rotate(0deg); } 100% { transform: translateX(calc(100vw + 50px)) rotate(360deg); } }
+        
+        /* CANDY - Dulce y colorido */
         .bg-candy { background: linear-gradient(180deg, #FFECB3 0%, #F8BBD9 50%, #E1BEE7 100%); }
-        .platform { position: absolute; height: 18px; border-radius: 5px; z-index: 5; }
-        .platform-castle { background: linear-gradient(180deg, #6D6D6D 0%, #4A4A4A 50%, #3D3D3D 100%); border-top: 3px solid #8a8a8a; box-shadow: 0 4px 0 #2d2d2d; }
-        .platform-forest { background: linear-gradient(180deg, #8D6E63 0%, #6D4C41 50%, #5D4037 100%); border-top: 3px solid #A1887F; box-shadow: 0 4px 0 #4E342E; }
-        .platform-ocean { background: linear-gradient(180deg, #0097A7 0%, #00838F 50%, #006064 100%); border-top: 3px solid #26C6DA; box-shadow: 0 4px 0 #004D40; }
-        .platform-space { background: linear-gradient(180deg, #7E57C2 0%, #5E35B1 50%, #4527A0 100%); border-top: 3px solid #B39DDB; box-shadow: 0 4px 0 #311B92; }
-        .platform-candy { background: linear-gradient(180deg, #F48FB1 0%, #F06292 50%, #EC407A 100%); border-top: 3px solid #F8BBD9; box-shadow: 0 4px 0 #C2185B; }
-        .ladder { position: absolute; width: 28px; z-index: 4; background: repeating-linear-gradient(180deg, #8D6E63 0px, #8D6E63 4px, transparent 4px, transparent 20px); border-left: 4px solid #5D4037; border-right: 4px solid #5D4037; }
+        .candy-cane { position: absolute; bottom: 20px; width: 15px; height: 100px; background: repeating-linear-gradient(45deg, #fff 0px, #fff 10px, #E91E63 10px, #E91E63 20px); border-radius: 10px; transform: rotate(-10deg); }
+        .gumdrop { position: absolute; bottom: 0; width: 50px; height: 40px; background: linear-gradient(180deg, #9C27B0 0%, #7B1FA2 100%); border-radius: 50% 50% 10px 10px; }
+        
+        /* PLATAFORMAS - TODAS IGUALES DE LARGAS */
+        .platform { position: absolute; height: 18px; z-index: 5; }
+        
+        /* Castillo - Piedra gótica */
+        .platform-castle { 
+            background: linear-gradient(180deg, #6D6D6D 0%, #4A4A4A 50%, #3D3D3D 100%); 
+            border-top: 4px solid #8a8a8a; 
+            box-shadow: 0 6px 0 #2d2d2d, 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+        .platform-castle::before { content: ''; position: absolute; top: -15px; left: 10px; width: 15px; height: 15px; background: #4A4A4A; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+        .platform-castle::after { content: ''; position: absolute; top: -15px; right: 10px; width: 15px; height: 15px; background: #4A4A4A; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+        
+        /* Bosque - Troncos y ramas */
+        .platform-forest { 
+            background: linear-gradient(180deg, #8D6E63 0%, #6D4C41 50%, #5D4037 100%); 
+            border-top: 4px solid #A1887F; 
+            box-shadow: 0 6px 0 #4E342E;
+            border-radius: 15px;
+        }
+        .platform-forest::before { content: '🌿'; position: absolute; top: -20px; left: 20%; font-size: 20px; animation: leafSway 2s ease-in-out infinite; }
+        .platform-forest::after { content: '🌿'; position: absolute; top: -18px; right: 25%; font-size: 16px; animation: leafSway 2.5s ease-in-out infinite reverse; }
+        @keyframes leafSway { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+        
+        /* Océano - Rocas coralinas */
+        .platform-ocean { 
+            background: linear-gradient(180deg, #0097A7 0%, #00838F 50%, #006064 100%); 
+            border-top: 4px solid #26C6DA; 
+            box-shadow: 0 6px 0 #004D40, 0 0 15px rgba(0,188,212,0.4);
+            border-radius: 50% 50% 10px 10px / 20% 20% 10px 10px;
+        }
+        .platform-ocean::before { content: ''; position: absolute; top: -8px; left: 15%; width: 8px; height: 8px; background: #FF7043; border-radius: 50%; box-shadow: 20px 0 0 #FF7043, 40px -3px 0 #FFCA28; }
+        
+        /* Espacio - Plataformas flotantes tecnológicas */
+        .platform-space { 
+            background: linear-gradient(180deg, #7E57C2 0%, #5E35B1 50%, #4527A0 100%); 
+            border: 2px solid #B39DDB; 
+            box-shadow: 0 0 20px #7E57C2, 0 6px 0 #311B92, inset 0 2px 10px rgba(255,255,255,0.2);
+            border-radius: 10px;
+            animation: platformFloat 3s ease-in-out infinite;
+        }
+        @keyframes platformFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .platform-space::before { content: ''; position: absolute; top: 50%; left: -10px; width: 20px; height: 4px; background: #B39DDB; border-radius: 2px; box-shadow: 0 0 10px #B39DDB; }
+        .platform-space::after { content: ''; position: absolute; top: 30%; right: -8px; width: 15px; height: 3px; background: #B39DDB; border-radius: 2px; }
+        
+        /* Candy - Dulces y gominolas */
+        .platform-candy { 
+            background: linear-gradient(180deg, #F48FB1 0%, #F06292 50%, #EC407A 100%); 
+            border-top: 4px solid #F8BBD9; 
+            box-shadow: 0 6px 0 #C2185B, 0 0 15px rgba(244,143,177,0.5);
+            border-radius: 25px;
+            border: 3px dashed white;
+        }
+        .platform-candy::before { content: '🍬'; position: absolute; top: -25px; left: 30%; font-size: 22px; animation: candyBounce 1s ease-in-out infinite; }
+        @keyframes candyBounce { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-5px) rotate(10deg); } }
+        
+        /* ESCALERAS ESTILIZADAS */
+        .ladder { position: absolute; z-index: 4; }
+        .ladder-castle { 
+            width: 32px;
+            background: repeating-linear-gradient(180deg, #5D4037 0px, #5D4037 6px, transparent 6px, transparent 24px);
+            border-left: 3px solid #3E2723; border-right: 3px solid #3E2723;
+        }
+        .ladder-forest { 
+            width: 28px;
+            background: repeating-linear-gradient(180deg, #8D6E63 0px, #8D6E63 4px, transparent 4px, transparent 20px);
+            border-left: 4px solid #6D4C41; border-right: 4px solid #6D4C41;
+            transform: rotate(2deg);
+        }
+        .ladder-ocean { 
+            width: 30px;
+            background: linear-gradient(90deg, transparent 40%, #4DD0E1 40%, #4DD0E1 60%, transparent 60%);
+            background-size: 100% 20px;
+            animation: bubbleUp 2s linear infinite;
+        }
+        @keyframes bubbleUp { 0% { background-position: 0 0; } 100% { background-position: 0 20px; } }
+        .ladder-space { 
+            width: 26px;
+            background: linear-gradient(180deg, rgba(126,87,194,0.8) 0%, rgba(126,87,194,0.2) 100%);
+            border: 2px dashed #B39DDB;
+            border-radius: 10px;
+            animation: ladderPulse 2s ease-in-out infinite;
+        }
+        @keyframes ladderPulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+        .ladder-candy { 
+            width: 34px;
+            background: repeating-linear-gradient(180deg, #FFEB3B 0px, #FFEB3B 8px, #F44336 8px, #F44336 16px);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255,235,59,0.5);
+        }
+        
         .player { position: absolute; width: 40px; height: 55px; z-index: 20; transition: transform 0.1s ease; }
         .player-sprite { width: 100%; height: 100%; position: relative; }
         .player-head { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 28px; height: 28px; background: #FFCC80; border-radius: 50%; box-shadow: inset -3px -3px 8px rgba(0,0,0,0.1); }
@@ -154,7 +264,7 @@
         @keyframes legWalk { 0%, 100% { transform: rotate(-20deg); } 50% { transform: rotate(20deg); } }
         @keyframes armSwing { 0%, 100% { transform: rotate(-15deg); } 50% { transform: rotate(15deg); } }
         
-        /* ========== PERSONAJE TILDE - PLÁTANO MEDIA LUNA ========== */
+        /* PERSONAJE TILDE - PLÁTANO MEDIA LUNA */
         .tilde-character {
             position: absolute;
             width: 50px;
@@ -164,8 +274,6 @@
             filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
             transition: opacity 0.3s ease;
         }
-        
-        /* Cuerpo del plátano - media luna lateral */
         .banana-tilde-body {
             position: absolute;
             top: 2px;
@@ -179,8 +287,6 @@
             box-shadow: inset -4px -2px 8px rgba(0,0,0,0.12), inset 4px 3px 6px rgba(255,255,255,0.35);
             overflow: visible;
         }
-        
-        /* Línea interior del plátano */
         .banana-tilde-inner {
             position: absolute;
             top: 6px;
@@ -190,8 +296,6 @@
             border-left: 2px solid rgba(198,138,10,0.3);
             border-radius: 70% 0% 0% 70% / 50% 0% 0% 50%;
         }
-        
-        /* Brillo lateral */
         .banana-tilde-highlight {
             position: absolute;
             top: 5px;
@@ -202,8 +306,6 @@
             border-radius: 50%;
             transform: rotate(-10deg);
         }
-        
-        /* Punta superior (rabito) */
         .banana-tilde-tip-top {
             position: absolute;
             top: -6px;
@@ -214,8 +316,6 @@
             border-radius: 50% 50% 20% 60%;
             transform: rotate(-30deg);
         }
-        
-        /* Punta inferior */
         .banana-tilde-tip-bottom {
             position: absolute;
             bottom: -4px;
@@ -226,8 +326,6 @@
             border-radius: 60% 20% 50% 50%;
             transform: rotate(15deg);
         }
-        
-        /* Cara del plátano */
         .banana-tilde-face {
             position: absolute;
             top: 5px;
@@ -236,8 +334,6 @@
             width: 36px;
             height: 28px;
         }
-        
-        /* Ojos */
         .banana-tilde-eyes {
             position: absolute;
             top: 4px;
@@ -246,7 +342,6 @@
             display: flex;
             gap: 8px;
         }
-        
         .banana-tilde-eye {
             width: 11px;
             height: 12px;
@@ -256,7 +351,6 @@
             box-shadow: inset 0 -2px 3px rgba(0,0,0,0.1);
             border: 2px solid #5D4037;
         }
-        
         .banana-tilde-pupil {
             position: absolute;
             width: 5px;
@@ -267,7 +361,6 @@
             left: 2px;
             animation: tildeLook 3s ease-in-out infinite;
         }
-        
         .banana-tilde-pupil::after {
             content: '';
             position: absolute;
@@ -278,14 +371,11 @@
             top: 0;
             left: 0;
         }
-        
         @keyframes tildeLook {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(2px); }
             75% { transform: translateX(-2px); }
         }
-        
-        /* Sonrisa traviesa */
         .banana-tilde-mouth {
             position: absolute;
             bottom: 3px;
@@ -298,8 +388,6 @@
             border-radius: 0 0 14px 14px;
             background: #FF7043;
         }
-        
-        /* Piernas del plátano */
         .banana-tilde-legs {
             position: absolute;
             bottom: 0;
@@ -308,7 +396,6 @@
             display: flex;
             gap: 8px;
         }
-        
         .banana-tilde-leg {
             width: 10px;
             height: 18px;
@@ -318,7 +405,6 @@
             border: 2px solid #C68A0A;
             box-shadow: inset 2px 0 3px rgba(255,255,255,0.3);
         }
-        
         .banana-tilde-shoe {
             position: absolute;
             bottom: -4px;
@@ -330,7 +416,6 @@
             box-shadow: 0 2px 3px rgba(0,0,0,0.3);
             border: 1px solid #4E342E;
         }
-        
         .banana-tilde-shoe::after {
             content: '';
             position: absolute;
@@ -341,61 +426,31 @@
             background: rgba(255,255,255,0.2);
             border-radius: 3px;
         }
-        
-        /* Animación de correr */
-        .tilde-character.running .banana-tilde-leg:first-child {
-            animation: tildeRunLeg 0.18s ease-in-out infinite;
-        }
-        .tilde-character.running .banana-tilde-leg:last-child {
-            animation: tildeRunLeg 0.18s ease-in-out infinite reverse;
-        }
-        
+        .tilde-character.running .banana-tilde-leg:first-child { animation: tildeRunLeg 0.18s ease-in-out infinite; }
+        .tilde-character.running .banana-tilde-leg:last-child { animation: tildeRunLeg 0.18s ease-in-out infinite reverse; }
         @keyframes tildeRunLeg {
             0%, 100% { transform: rotate(-30deg) translateY(-2px); }
             50% { transform: rotate(30deg) translateY(0); }
         }
-        
-        /* Efecto de rebote al correr */
-        .tilde-character.running .banana-tilde-body {
-            animation: tildeBounce 0.18s ease-in-out infinite;
-        }
-        
+        .tilde-character.running .banana-tilde-body { animation: tildeBounce 0.18s ease-in-out infinite; }
         @keyframes tildeBounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(-4px); }
         }
-        
-        /* Animación de recolección */
-        .tilde-character.collected {
-            animation: tildeCollected 0.5s ease forwards;
-        }
-        
+        .tilde-character.collected { animation: tildeCollected 0.5s ease forwards; }
         @keyframes tildeCollected {
             0% { transform: scale(1) rotate(0); opacity: 1; }
             30% { transform: scale(1.4) rotate(-15deg); }
             60% { transform: scale(1.5) rotate(15deg); }
             100% { transform: scale(0) rotate(720deg); opacity: 0; }
         }
-        
-        /* Aparición con efecto mágico */
-        .tilde-character.appearing {
-            animation: tildeAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
+        .tilde-character.appearing { animation: tildeAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes tildeAppear {
             0% { transform: scale(0) rotate(-180deg); opacity: 0; filter: brightness(2); }
             60% { transform: scale(1.3) rotate(15deg); filter: brightness(1.5); }
             100% { transform: scale(1) rotate(0); opacity: 1; filter: brightness(1); }
         }
-        
-        /* Partículas de brillo alrededor */
-        .tilde-sparkles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        
+        .tilde-sparkles { position: absolute; width: 100%; height: 100%; pointer-events: none; }
         .tilde-sparkle {
             position: absolute;
             width: 6px;
@@ -405,18 +460,14 @@
             animation: sparkle 1.2s ease-in-out infinite;
             box-shadow: 0 0 4px #FFD54F;
         }
-        
         .tilde-sparkle:nth-child(1) { top: -8px; left: 15px; animation-delay: 0s; }
         .tilde-sparkle:nth-child(2) { top: 0px; right: -5px; animation-delay: 0.3s; }
         .tilde-sparkle:nth-child(3) { bottom: 25px; left: -5px; animation-delay: 0.6s; }
         .tilde-sparkle:nth-child(4) { top: 10px; right: -8px; animation-delay: 0.9s; }
-        
         @keyframes sparkle {
             0%, 100% { transform: scale(0); opacity: 0; }
             50% { transform: scale(1.2); opacity: 1; }
         }
-        
-        /* ========== FIN PERSONAJE TILDE ========== */
         
         .enemy { position: absolute; z-index: 18; }
         .pencil-enemy { width: 18px; height: 55px; }
@@ -474,7 +525,7 @@
         @keyframes worldZoom { from { opacity: 0; transform: scale(1.3); } to { opacity: 1; transform: scale(1); } }
         .world-intro-name { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 10vw, 4rem); text-shadow: 4px 4px 0 rgba(0,0,0,0.3); margin-bottom: 10px; }
         .world-intro-level { font-size: 1.5rem; opacity: 0.9; font-weight: 700; }
-        .goal-zone { position: absolute; left: 50%; transform: translateX(-50%); padding: 10px 25px; background: linear-gradient(135deg, var(--accent) 0%, #FFB300 100%); border-radius: 12px; font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--dark); box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10; animation: goalGlow 2s ease-in-out infinite; }
+        .goal-zone { position: absolute; top: 65px; left: 50%; transform: translateX(-50%); padding: 10px 25px; background: linear-gradient(135deg, var(--accent) 0%, #FFB300 100%); border-radius: 12px; font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--dark); box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 10; animation: goalGlow 2s ease-in-out infinite; }
         @keyframes goalGlow { 0%, 100% { box-shadow: 0 4px 15px rgba(255,193,7,0.4); } 50% { box-shadow: 0 4px 25px rgba(255,193,7,0.7); } }
         .pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 500; }
         .pause-overlay.active { display: flex; }
@@ -508,7 +559,6 @@
         .lollipop-candy { width: 50px; height: 50px; border-radius: 50%; background: conic-gradient(#E91E63 0deg, white 30deg, #E91E63 60deg, white 90deg, #E91E63 120deg, white 150deg, #E91E63 180deg, white 210deg, #E91E63 240deg, white 270deg, #E91E63 300deg, white 330deg, #E91E63 360deg); }
         .lollipop-stick { width: 8px; height: 80px; background: #FFECB3; margin: 0 auto; border-radius: 0 0 4px 4px; }
         
-        /* Botón de sonido */
         .sound-toggle {
             position: absolute;
             top: 10px;
@@ -610,6 +660,993 @@
             <div class="menu-buttons"><button class="btn btn-primary" onclick="playAgain()">JUGAR DE NUEVO</button><button class="btn btn-secondary" onclick="showScreen('menu-screen')">MENÚ</button></div>
         </div>
     </div>
-    <script src="game.js"></script>
+    <script>
+        // ==================== SISTEMA DE SONIDO ====================
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-btn').textContent = soundEnabled ? '🔊' : '🔇';
+            if (soundEnabled) initAudio();
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+            
+            const now = audioCtx.currentTime;
+            
+            switch(type) {
+                case 'jump':
+                    playTone([400, 600], [0.1, 0.1], 'sine', 0.3);
+                    break;
+                case 'collect':
+                    playTone([523, 659, 784, 1047], [0.1, 0.1, 0.1, 0.2], 'sine', 0.4);
+                    break;
+                case 'correct':
+                    playTone([523, 659, 784], [0.15, 0.15, 0.3], 'sine', 0.5);
+                    break;
+                case 'wrong':
+                    playTone([300, 200], [0.2, 0.3], 'sawtooth', 0.3);
+                    break;
+                case 'hit':
+                    playNoise(0.15, 0.4);
+                    playTone([200, 100], [0.1, 0.15], 'square', 0.3);
+                    break;
+                case 'click':
+                    playTone([800, 1000], [0.05, 0.05], 'sine', 0.2);
+                    break;
+                case 'appear':
+                    playTone([300, 500, 700], [0.08, 0.08, 0.15], 'sine', 0.3);
+                    break;
+                case 'disappear':
+                    playTone([600, 400, 200], [0.08, 0.08, 0.1], 'sine', 0.2);
+                    break;
+                case 'levelup':
+                    playTone([523, 659, 784, 1047, 1319], [0.12, 0.12, 0.12, 0.12, 0.4], 'sine', 0.5);
+                    break;
+                case 'walk':
+                    playTone([100, 120], [0.03, 0.03], 'triangle', 0.1);
+                    break;
+            }
+        }
+
+        function playTone(frequencies, durations, waveType, volume) {
+            if (!audioCtx) return;
+            
+            const gainNode = audioCtx.createGain();
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.value = volume;
+            
+            let time = audioCtx.currentTime;
+            
+            frequencies.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const oscGain = audioCtx.createGain();
+                
+                osc.type = waveType;
+                osc.frequency.value = freq;
+                
+                osc.connect(oscGain);
+                oscGain.connect(gainNode);
+                
+                oscGain.gain.setValueAtTime(volume, time);
+                oscGain.gain.exponentialRampToValueAtTime(0.01, time + durations[i]);
+                
+                osc.start(time);
+                osc.stop(time + durations[i]);
+                
+                time += durations[i] * 0.7;
+            });
+        }
+
+        function playNoise(duration, volume) {
+            if (!audioCtx) return;
+            
+            const bufferSize = audioCtx.sampleRate * duration;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            
+            noise.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            noise.start();
+        }
+
+        // ==================== BANCO DE PALABRAS ====================
+        const WORD_BANK = {
+            agudas: [
+                {word:'cafe',correct:'café',type:'aguda'},{word:'sofa',correct:'sofá',type:'aguda'},{word:'mama',correct:'mamá',type:'aguda'},
+                {word:'papa',correct:'papá',type:'aguda'},{word:'alla',correct:'allá',type:'aguda'},{word:'sera',correct:'será',type:'aguda'},
+                {word:'esta',correct:'está',type:'aguda'},{word:'aqui',correct:'aquí',type:'aguda'},{word:'alli',correct:'allí',type:'aguda'},
+                {word:'ahi',correct:'ahí',type:'aguda'},{word:'rubi',correct:'rubí',type:'aguda'},{word:'jabali',correct:'jabalí',type:'aguda'},
+                {word:'colibri',correct:'colibrí',type:'aguda'},{word:'mani',correct:'maní',type:'aguda'},{word:'tabu',correct:'tabú',type:'aguda'},
+                {word:'bambu',correct:'bambú',type:'aguda'},{word:'menu',correct:'menú',type:'aguda'},{word:'iglu',correct:'iglú',type:'aguda'},
+                {word:'peru',correct:'Perú',type:'aguda'},{word:'hindu',correct:'hindú',type:'aguda'},{word:'raton',correct:'ratón',type:'aguda'},
+                {word:'camion',correct:'camión',type:'aguda'},{word:'avion',correct:'avión',type:'aguda'},{word:'leon',correct:'león',type:'aguda'},
+                {word:'melon',correct:'melón',type:'aguda'},{word:'sillon',correct:'sillón',type:'aguda'},{word:'balon',correct:'balón',type:'aguda'},
+                {word:'jamon',correct:'jamón',type:'aguda'},{word:'limon',correct:'limón',type:'aguda'},{word:'buzon',correct:'buzón',type:'aguda'},
+                {word:'colchon',correct:'colchón',type:'aguda'},{word:'salon',correct:'salón',type:'aguda'},{word:'rincon',correct:'rincón',type:'aguda'},
+                {word:'tacon',correct:'tacón',type:'aguda'},{word:'algodon',correct:'algodón',type:'aguda'},{word:'boton',correct:'botón',type:'aguda'},
+                {word:'corazon',correct:'corazón',type:'aguda'},{word:'dragon',correct:'dragón',type:'aguda'},{word:'jabon',correct:'jabón',type:'aguda'},
+                {word:'ladron',correct:'ladrón',type:'aguda'},{word:'marron',correct:'marrón',type:'aguda'},{word:'nacion',correct:'nación',type:'aguda'},
+                {word:'pantalon',correct:'pantalón',type:'aguda'},{word:'sarten',correct:'sartén',type:'aguda'},{word:'tambien',correct:'también',type:'aguda'},
+                {word:'ningun',correct:'ningún',type:'aguda'},{word:'algun',correct:'algún',type:'aguda'},{word:'comun',correct:'común',type:'aguda'},
+                {word:'atun',correct:'atún',type:'aguda'},{word:'delfin',correct:'delfín',type:'aguda'},{word:'jardin',correct:'jardín',type:'aguda'},
+                {word:'violin',correct:'violín',type:'aguda'},{word:'patin',correct:'patín',type:'aguda'},{word:'calcetin',correct:'calcetín',type:'aguda'},
+                {word:'trampolin',correct:'trampolín',type:'aguda'},{word:'cajon',correct:'cajón',type:'aguda'},{word:'tiburon',correct:'tiburón',type:'aguda'},
+                {word:'perdon',correct:'perdón',type:'aguda'},{word:'bombon',correct:'bombón',type:'aguda'},{word:'campeon',correct:'campeón',type:'aguda'},
+                {word:'cancion',correct:'canción',type:'aguda'},{word:'leccion',correct:'lección',type:'aguda'},{word:'emocion',correct:'emoción',type:'aguda'},
+                {word:'adios',correct:'adiós',type:'aguda'},{word:'despues',correct:'después',type:'aguda'},{word:'ingles',correct:'inglés',type:'aguda'},
+                {word:'frances',correct:'francés',type:'aguda'},{word:'japones',correct:'japonés',type:'aguda'},{word:'portugues',correct:'portugués',type:'aguda'},
+                {word:'cortes',correct:'cortés',type:'aguda'},{word:'marques',correct:'marqués',type:'aguda'},{word:'compas',correct:'compás',type:'aguda'},
+                {word:'quizas',correct:'quizás',type:'aguda'},{word:'jamas',correct:'jamás',type:'aguda'},{word:'ademas',correct:'además',type:'aguda'},
+                {word:'detras',correct:'detrás',type:'aguda'},{word:'autobus',correct:'autobús',type:'aguda'},{word:'canto',correct:'cantó',type:'aguda'},
+                {word:'bailo',correct:'bailó',type:'aguda'},{word:'salto',correct:'saltó',type:'aguda'},{word:'jugo',correct:'jugó',type:'aguda'},
+                {word:'pinto',correct:'pintó',type:'aguda'},{word:'estudio',correct:'estudió',type:'aguda'},{word:'camino',correct:'caminó',type:'aguda'},
+                {word:'corrio',correct:'corrió',type:'aguda'},{word:'subio',correct:'subió',type:'aguda'},{word:'comio',correct:'comió',type:'aguda'},
+                {word:'bebio',correct:'bebió',type:'aguda'},{word:'durmio',correct:'durmió',type:'aguda'},{word:'salio',correct:'salió',type:'aguda'},
+                {word:'entro',correct:'entró',type:'aguda'},{word:'miro',correct:'miró',type:'aguda'},{word:'escucho',correct:'escuchó',type:'aguda'},
+                {word:'hablo',correct:'habló',type:'aguda'},{word:'llamo',correct:'llamó',type:'aguda'},{word:'llego',correct:'llegó',type:'aguda'},
+                {word:'paso',correct:'pasó',type:'aguda'},{word:'penso',correct:'pensó',type:'aguda'},{word:'volo',correct:'voló',type:'aguda'},
+                {word:'gano',correct:'ganó',type:'aguda'},{word:'perdio',correct:'perdió',type:'aguda'},{word:'encontro',correct:'encontró',type:'aguda'},
+                {word:'cayo',correct:'cayó',type:'aguda'},{word:'oyo',correct:'oyó',type:'aguda'},{word:'leyo',correct:'leyó',type:'aguda'}
+            ],
+            llanas: [
+                {word:'arbol',correct:'árbol',type:'llana'},{word:'facil',correct:'fácil',type:'llana'},{word:'dificil',correct:'difícil',type:'llana'},
+                {word:'util',correct:'útil',type:'llana'},{word:'fragil',correct:'frágil',type:'llana'},{word:'agil',correct:'ágil',type:'llana'},
+                {word:'habil',correct:'hábil',type:'llana'},{word:'debil',correct:'débil',type:'llana'},{word:'movil',correct:'móvil',type:'llana'},
+                {word:'fertil',correct:'fértil',type:'llana'},{word:'docil',correct:'dócil',type:'llana'},{word:'portatil',correct:'portátil',type:'llana'},
+                {word:'crater',correct:'cráter',type:'llana'},{word:'caracter',correct:'carácter',type:'llana'},{word:'martir',correct:'mártir',type:'llana'},
+                {word:'nectar',correct:'néctar',type:'llana'},{word:'azucar',correct:'azúcar',type:'llana'},{word:'almibar',correct:'almíbar',type:'llana'},
+                {word:'ambar',correct:'ámbar',type:'llana'},{word:'cancer',correct:'cáncer',type:'llana'},{word:'cadaver',correct:'cadáver',type:'llana'},
+                {word:'trebol',correct:'trébol',type:'llana'},{word:'tunel',correct:'túnel',type:'llana'},{word:'angel',correct:'ángel',type:'llana'},
+                {word:'carcel',correct:'cárcel',type:'llana'},{word:'futbol',correct:'fútbol',type:'llana'},{word:'beisbol',correct:'béisbol',type:'llana'},
+                {word:'poster',correct:'póster',type:'llana'},{word:'hamster',correct:'hámster',type:'llana'},{word:'lider',correct:'líder',type:'llana'},
+                {word:'super',correct:'súper',type:'llana'},{word:'pixel',correct:'píxel',type:'llana'},{word:'album',correct:'álbum',type:'llana'},
+                {word:'consul',correct:'cónsul',type:'llana'},{word:'lapiz',correct:'lápiz',type:'llana'},{word:'caliz',correct:'cáliz',type:'llana'},
+                {word:'fenix',correct:'fénix',type:'llana'},{word:'torax',correct:'tórax',type:'llana'},{word:'climax',correct:'clímax',type:'llana'},
+                {word:'biceps',correct:'bíceps',type:'llana'},{word:'triceps',correct:'tríceps',type:'llana'},{word:'record',correct:'récord',type:'llana'},
+                {word:'cesped',correct:'césped',type:'llana'},{word:'huesped',correct:'huésped',type:'llana'},{word:'marmol',correct:'mármol',type:'llana'},
+                {word:'mastil',correct:'mástil',type:'llana'},{word:'fosil',correct:'fósil',type:'llana'},{word:'datil',correct:'dátil',type:'llana'},
+                {word:'dolar',correct:'dólar',type:'llana'},{word:'comic',correct:'cómic',type:'llana'}
+            ],
+            esdrujulas: [
+                {word:'pajaro',correct:'pájaro',type:'esdrujula'},{word:'murcielago',correct:'murciélago',type:'esdrujula'},{word:'libelula',correct:'libélula',type:'esdrujula'},
+                {word:'mamifero',correct:'mamífero',type:'esdrujula'},{word:'brujula',correct:'brújula',type:'esdrujula'},{word:'camara',correct:'cámara',type:'esdrujula'},
+                {word:'lampara',correct:'lámpara',type:'esdrujula'},{word:'maquina',correct:'máquina',type:'esdrujula'},{word:'fabrica',correct:'fábrica',type:'esdrujula'},
+                {word:'capsula',correct:'cápsula',type:'esdrujula'},{word:'sabana',correct:'sábana',type:'esdrujula'},{word:'platano',correct:'plátano',type:'esdrujula'},
+                {word:'piramide',correct:'pirámide',type:'esdrujula'},{word:'pelicula',correct:'película',type:'esdrujula'},{word:'mascara',correct:'máscara',type:'esdrujula'},
+                {word:'lagrima',correct:'lágrima',type:'esdrujula'},{word:'pagina',correct:'página',type:'esdrujula'},{word:'silaba',correct:'sílaba',type:'esdrujula'},
+                {word:'formula',correct:'fórmula',type:'esdrujula'},{word:'celula',correct:'célula',type:'esdrujula'},{word:'molecula',correct:'molécula',type:'esdrujula'},
+                {word:'america',correct:'América',type:'esdrujula'},{word:'africa',correct:'África',type:'esdrujula'},{word:'oceano',correct:'océano',type:'esdrujula'},
+                {word:'atlantico',correct:'atlántico',type:'esdrujula'},{word:'pacifico',correct:'pacífico',type:'esdrujula'},{word:'peninsula',correct:'península',type:'esdrujula'},
+                {word:'fantastico',correct:'fantástico',type:'esdrujula'},{word:'magnifico',correct:'magnífico',type:'esdrujula'},{word:'ridiculo',correct:'ridículo',type:'esdrujula'},
+                {word:'tipico',correct:'típico',type:'esdrujula'},{word:'clasico',correct:'clásico',type:'esdrujula'},{word:'romantico',correct:'romántico',type:'esdrujula'},
+                {word:'dramatico',correct:'dramático',type:'esdrujula'},{word:'tragico',correct:'trágico',type:'esdrujula'},{word:'comico',correct:'cómico',type:'esdrujula'},
+                {word:'logico',correct:'lógico',type:'esdrujula'},{word:'historico',correct:'histórico',type:'esdrujula'},{word:'geografico',correct:'geográfico',type:'esdrujula'},
+                {word:'biologico',correct:'biológico',type:'esdrujula'},{word:'ecologico',correct:'ecológico',type:'esdrujula'},{word:'tecnologico',correct:'tecnológico',type:'esdrujula'},
+                {word:'cientifico',correct:'científico',type:'esdrujula'},{word:'publico',correct:'público',type:'esdrujula'},{word:'medico',correct:'médico',type:'esdrujula'},
+                {word:'quimico',correct:'químico',type:'esdrujula'},{word:'fisico',correct:'físico',type:'esdrujula'},{word:'telefono',correct:'teléfono',type:'esdrujula'},
+                {word:'microfono',correct:'micrófono',type:'esdrujula'},{word:'semaforo',correct:'semáforo',type:'esdrujula'},{word:'helicoptero',correct:'helicóptero',type:'esdrujula'},
+                {word:'termometro',correct:'termómetro',type:'esdrujula'},{word:'kilometro',correct:'kilómetro',type:'esdrujula'},{word:'musica',correct:'música',type:'esdrujula'},
+                {word:'matematicas',correct:'matemáticas',type:'esdrujula'},{word:'gramatica',correct:'gramática',type:'esdrujula'},{word:'numero',correct:'número',type:'esdrujula'},
+                {word:'espiritu',correct:'espíritu',type:'esdrujula'},{word:'capitulo',correct:'capítulo',type:'esdrujula'},{word:'titulo',correct:'título',type:'esdrujula'},
+                {word:'credito',correct:'crédito',type:'esdrujula'},{word:'codigo',correct:'código',type:'esdrujula'},{word:'metodo',correct:'método',type:'esdrujula'},
+                {word:'periodo',correct:'período',type:'esdrujula'},{word:'proposito',correct:'propósito',type:'esdrujula'},{word:'simbolo',correct:'símbolo',type:'esdrujula'},
+                {word:'estimulo',correct:'estímulo',type:'esdrujula'},{word:'angulo',correct:'ángulo',type:'esdrujula'},{word:'musculo',correct:'músculo',type:'esdrujula'},
+                {word:'calculo',correct:'cálculo',type:'esdrujula'},{word:'vinculo',correct:'vínculo',type:'esdrujula'},{word:'obstaculo',correct:'obstáculo',type:'esdrujula'},
+                {word:'curriculo',correct:'currículo',type:'esdrujula'},{word:'vehiculo',correct:'vehículo',type:'esdrujula'},{word:'particula',correct:'partícula',type:'esdrujula'},
+                {word:'valvula',correct:'válvula',type:'esdrujula'},{word:'ultima',correct:'última',type:'esdrujula'},{word:'ultimo',correct:'último',type:'esdrujula'},
+                {word:'proximo',correct:'próximo',type:'esdrujula'},{word:'maximo',correct:'máximo',type:'esdrujula'},{word:'minimo',correct:'mínimo',type:'esdrujula'},
+                {word:'optimo',correct:'óptimo',type:'esdrujula'},{word:'intimo',correct:'íntimo',type:'esdrujula'},{word:'articulo',correct:'artículo',type:'esdrujula'},
+                {word:'espectaculo',correct:'espectáculo',type:'esdrujula'},{word:'circulo',correct:'círculo',type:'esdrujula'},{word:'triangulo',correct:'triángulo',type:'esdrujula'}
+            ],
+            hiatos: [
+                {word:'dia',correct:'día',type:'hiato'},{word:'tia',correct:'tía',type:'hiato'},{word:'mia',correct:'mía',type:'hiato'},
+                {word:'fria',correct:'fría',type:'hiato'},{word:'sandia',correct:'sandía',type:'hiato'},{word:'melodia',correct:'melodía',type:'hiato'},
+                {word:'energia',correct:'energía',type:'hiato'},{word:'fantasia',correct:'fantasía',type:'hiato'},{word:'compania',correct:'compañía',type:'hiato'},
+                {word:'geografia',correct:'geografía',type:'hiato'},{word:'biografia',correct:'biografía',type:'hiato'},{word:'filosofia',correct:'filosofía',type:'hiato'},
+                {word:'tecnologia',correct:'tecnología',type:'hiato'},{word:'biologia',correct:'biología',type:'hiato'},{word:'psicologia',correct:'psicología',type:'hiato'},
+                {word:'alegria',correct:'alegría',type:'hiato'},{word:'valentia',correct:'valentía',type:'hiato'},{word:'simpatia',correct:'simpatía',type:'hiato'},
+                {word:'cortesia',correct:'cortesía',type:'hiato'},{word:'panaderia',correct:'panadería',type:'hiato'},{word:'libreria',correct:'librería',type:'hiato'},
+                {word:'joyeria',correct:'joyería',type:'hiato'},{word:'cafeteria',correct:'cafetería',type:'hiato'},{word:'rio',correct:'río',type:'hiato'},
+                {word:'frio',correct:'frío',type:'hiato'},{word:'mio',correct:'mío',type:'hiato'},{word:'lio',correct:'lío',type:'hiato'},
+                {word:'navio',correct:'navío',type:'hiato'},{word:'desafio',correct:'desafío',type:'hiato'},{word:'rocio',correct:'rocío',type:'hiato'},
+                {word:'vacio',correct:'vacío',type:'hiato'},{word:'pua',correct:'púa',type:'hiato'},{word:'grua',correct:'grúa',type:'hiato'},
+                {word:'continua',correct:'continúa',type:'hiato'},{word:'actua',correct:'actúa',type:'hiato'},{word:'evalua',correct:'evalúa',type:'hiato'},
+                {word:'buho',correct:'búho',type:'hiato'},{word:'duo',correct:'dúo',type:'hiato'},{word:'pais',correct:'país',type:'hiato'},
+                {word:'maiz',correct:'maíz',type:'hiato'},{word:'raiz',correct:'raíz',type:'hiato'},{word:'oir',correct:'oír',type:'hiato'},
+                {word:'reir',correct:'reír',type:'hiato'},{word:'freir',correct:'freír',type:'hiato'},{word:'baul',correct:'baúl',type:'hiato'},
+                {word:'ataud',correct:'ataúd',type:'hiato'},{word:'caida',correct:'caída',type:'hiato'},{word:'oido',correct:'oído',type:'hiato'},
+                {word:'leido',correct:'leído',type:'hiato'},{word:'creido',correct:'creído',type:'hiato'},{word:'traido',correct:'traído',type:'hiato'}
+            ],
+            diacritica: [
+                {frase:'_____ niño come helado',correcta:'El',incorrecta:'Él'},{frase:'_____ es mi mejor amigo',correcta:'Él',incorrecta:'El'},
+                {frase:'Dile a _____ que venga',correcta:'él',incorrecta:'el'},{frase:'_____ perro ladra mucho',correcta:'El',incorrecta:'Él'},
+                {frase:'_____ eres muy listo',correcta:'Tú',incorrecta:'Tu'},{frase:'Dame _____ mochila',correcta:'tu',incorrecta:'tú'},
+                {frase:'¿Vienes _____ también?',correcta:'tú',incorrecta:'tu'},{frase:'_____ casa es bonita',correcta:'Tu',incorrecta:'Tú'},
+                {frase:'Esto es para _____',correcta:'mí',incorrecta:'mi'},{frase:'_____ hermano es alto',correcta:'Mi',incorrecta:'Mí'},
+                {frase:'A _____ me gusta el fútbol',correcta:'mí',incorrecta:'mi'},{frase:'Dame _____ libro',correcta:'mi',incorrecta:'mí'},
+                {frase:'_____ quiero ir',correcta:'Sí',incorrecta:'Si'},{frase:'_____ llueve, no salimos',correcta:'Si',incorrecta:'Sí'},
+                {frase:'Dijo que _____',correcta:'sí',incorrecta:'si'},{frase:'_____ estudias, aprobarás',correcta:'Si',incorrecta:'Sí'},
+                {frase:'Quiero _____ agua',correcta:'más',incorrecta:'mas'},{frase:'Lo intentó, _____ no pudo',correcta:'mas',incorrecta:'más'},
+                {frase:'¿Quieres un _____?',correcta:'té',incorrecta:'te'},{frase:'_____ quiero mucho',correcta:'Te',incorrecta:'Té'},
+                {frase:'El _____ está caliente',correcta:'té',incorrecta:'te'},{frase:'_____ lo dije ayer',correcta:'Te',incorrecta:'Té'},
+                {frase:'Yo _____ la respuesta',correcta:'sé',incorrecta:'se'},{frase:'_____ cayó al suelo',correcta:'Se',incorrecta:'Sé'},
+                {frase:'Quiero que me lo _____',correcta:'dé',incorrecta:'de'},{frase:'La casa _____ madera',correcta:'de',incorrecta:'dé'},
+                {frase:'_____ no ha llegado',correcta:'Aún',incorrecta:'Aun'},{frase:'_____ así lo intentó',correcta:'Aun',incorrecta:'Aún'}
+            ]
+        };
+
+        // CAMBIO: Solo 3 palabras por mundo para rotar más rápido
+        const WORLDS = [
+            {id:'castle',name:'🏰 Castillo',wordsPerWorld:3,bgClass:'bg-castle',platformClass:'platform-castle',ladderClass:'ladder-castle'},
+            {id:'forest',name:'🌲 Bosque',wordsPerWorld:3,bgClass:'bg-forest',platformClass:'platform-forest',ladderClass:'ladder-forest'},
+            {id:'ocean',name:'🌊 Océano',wordsPerWorld:3,bgClass:'bg-ocean',platformClass:'platform-ocean',ladderClass:'ladder-ocean'},
+            {id:'space',name:'🚀 Espacio',wordsPerWorld:3,bgClass:'bg-space',platformClass:'platform-space',ladderClass:'ladder-space'},
+            {id:'candy',name:'🍬 Reino Dulce',wordsPerWorld:3,bgClass:'bg-candy',platformClass:'platform-candy',ladderClass:'ladder-candy'}
+        ];
+
+        let gameState = {
+            numPlayers:1,mode:'competitive',currentPlayer:0,players:[],
+            currentWorldIndex:0, // Índice del mundo actual
+            wordsInCurrentWorld:0, // Contador de palabras en el mundo actual
+            isPlaying:false,isPaused:false,currentWord:null,collectedTilde:false,
+            usedWords:new Set(),coopGoal:500,
+            selectedVowelIndex:-1,selectedClassification:null,tildeCorrect:false,accentedWord:''
+        };
+
+        let player = {x:100,y:500,vx:0,vy:0,width:40,height:55,speed:5,jumpForce:-13,gravity:0.6,onGround:false,onLadder:false,isClimbing:false,facingRight:true};
+        let platforms=[],ladders=[],activeTilde=null,enemies=[],keys={},touchStates={left:false,right:false,up:false,down:false,jump:false};
+        let gameLoopId=null,enemySpawnInterval=null,tildeInterval=null;
+        let lastWalkSound = 0;
+
+        function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+        function selectPlayers(num){
+            playSound('click');
+            gameState.numPlayers=num;
+            document.querySelectorAll('.player-option').forEach(p=>p.classList.remove('selected'));
+            document.querySelector(`[data-players="${num}"]`).classList.add('selected');
+            if(num===1)startGame();else setTimeout(()=>showScreen('mode-screen'),200);
+        }
+
+        function selectMode(mode){
+            playSound('click');
+            gameState.mode=mode;
+            document.querySelectorAll('.mode-option').forEach(m=>m.classList.remove('selected'));
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('selected');
+            setTimeout(()=>startGame(),200);
+        }
+
+        function startGame(){
+            initAudio();
+            gameState.players=[];
+            for(let i=0;i<gameState.numPlayers;i++)gameState.players.push({name:`J${i+1}`,score:0,lives:3});
+            gameState.currentPlayer=0;
+            gameState.currentWorldIndex=0; // Empezar en el primer mundo
+            gameState.wordsInCurrentWorld=0;
+            gameState.usedWords=new Set();
+            gameState.isPlaying=true;
+            if('ontouchstart' in window)document.getElementById('touch-controls').classList.add('active');
+            showScreen('game-screen');showWorldIntro();
+        }
+
+        function getCurrentWorld(){return WORLDS[gameState.currentWorldIndex];}
+
+        function showWorldIntro(){
+            gameState.isPaused=true;
+            if(enemySpawnInterval){clearInterval(enemySpawnInterval);enemySpawnInterval=null;}
+            if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+            const world=getCurrentWorld();
+            document.getElementById('world-intro-name').textContent=world.name;
+            document.getElementById('world-intro-level').textContent=`Mundo ${gameState.currentWorldIndex+1}/${WORLDS.length}`;
+            document.getElementById('world-intro').classList.add('active');
+            playSound('levelup');
+            setTimeout(()=>{document.getElementById('world-intro').classList.remove('active');initLevel();},2000);
+        }
+
+        function initLevel(){
+            const gameArea=document.getElementById('game-area');gameArea.innerHTML='';
+            platforms=[];ladders=[];activeTilde=null;enemies=[];
+            if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+            const world=getCurrentWorld();
+            createWorldBackground(world);createPlatforms(world);createLadders(world);createGoalZone();
+            player.x=100;player.y=520;player.vx=0;player.vy=0;gameState.collectedTilde=false;gameState.isPaused=false;
+            createPlayerSprite();updateHUD();updateCollectedIndicator();selectNewWord();
+            if(gameLoopId)cancelAnimationFrame(gameLoopId);gameLoop();startEnemySpawner();
+        }
+
+        // FONDOS ÚNICOS POR MUNDO
+        function createWorldBackground(world){
+            const gameArea=document.getElementById('game-area');
+            const bg=document.createElement('div');bg.className=`world-bg ${world.bgClass}`;
+            
+            if(world.id==='castle'){
+                bg.innerHTML=`
+                    <div class="castle-tower" style="left:5%;height:180px;"><div class="castle-window" style="top:40px;left:50%;transform:translateX(-50%);"></div></div>
+                    <div class="castle-tower" style="left:25%;height:220px;"><div class="castle-window" style="top:60px;left:50%;transform:translateX(-50%);"></div><div class="castle-window" style="top:120px;left:50%;transform:translateX(-50%);"></div></div>
+                    <div class="castle-tower" style="right:15%;height:200px;"><div class="castle-window" style="top:50px;left:50%;transform:translateX(-50%);"></div></div>
+                    <div class="castle-tower" style="right:5%;height:160px;"><div class="castle-window" style="top:30px;left:50%;transform:translateX(-50%);"></div></div>
+                    <div class="moon" style="top:30px;right:50px;"></div>
+                `;
+            }
+            else if(world.id==='forest'){
+                bg.innerHTML=`
+                    <div class="tree" style="left:8%;height:140px;"></div>
+                    <div class="tree" style="left:35%;height:180px;"></div>
+                    <div class="tree" style="right:20%;height:160px;"></div>
+                    <div class="tree" style="right:5%;height:130px;"></div>
+                    <div class="sun" style="top:20px;right:60px;"></div>
+                `;
+            }
+            else if(world.id==='ocean'){
+                bg.innerHTML=`
+                    <div class="coral" style="left:10%;height:70px;"></div>
+                    <div class="coral" style="left:30%;height:90px;animation-delay:1s;"></div>
+                    <div class="seaweed" style="left:55%;height:120px;"></div>
+                    <div class="seaweed" style="left:70%;height:80px;animation-delay:0.5s;"></div>
+                    <div class="coral" style="right:10%;height:60px;animation-delay:2s;"></div>
+                    ${Array(8).fill(0).map((_,i)=>`<div class="bubble" style="left:${Math.random()*100}%;bottom:${Math.random()*50}px;animation-delay:${Math.random()*4}s;"></div>`).join('')}
+                `;
+            }
+            else if(world.id==='space'){
+                bg.innerHTML=`
+                    <div class="planet-bg" style="width:60px;height:60px;background:linear-gradient(135deg,#E57373 0%,#C62828 100%);top:40px;left:10%;"></div>
+                    <div class="planet-bg" style="width:40px;height:40px;background:linear-gradient(135deg,#64B5F6 0%,#1565C0 100%);top:100px;right:15%;"></div>
+                    <div class="asteroid" style="top:150px;animation-duration:25s;"></div>
+                    <div class="asteroid" style="top:250px;animation-duration:30s;animation-delay:5s;"></div>
+                    ${Array(50).fill(0).map((_,i)=>`<div class="star" style="left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*2}s;"></div>`).join('')}
+                `;
+            }
+            else if(world.id==='candy'){
+                bg.innerHTML=`
+                    <div class="candy-cane" style="left:15%;"></div>
+                    <div class="candy-cane" style="left:40%;transform:rotate(15deg);"></div>
+                    <div class="gumdrop" style="left:60%;background:linear-gradient(180deg,#9C27B0 0%,#7B1FA2 100%);"></div>
+                    <div class="gumdrop" style="right:20%;background:linear-gradient(180deg,#4CAF50 0%,#388E3C 100%);"></div>
+                    <div class="lollipop" style="right:5%;bottom:20px;"><div class="lollipop-candy" style="background:conic-gradient(#E91E63 0deg,white 60deg,#E91E63 120deg,white 180deg,#E91E63 240deg,white 300deg,#E91E63 360deg);"></div><div class="lollipop-stick"></div></div>
+                `;
+            }
+            gameArea.appendChild(bg);
+        }
+
+        // PLATAFORMAS - TODAS IGUALES DE LARGAS COMO EN EL ORIGINAL
+        function createPlatforms(world){
+            const gameArea=document.getElementById('game-area');
+            const gw=gameArea.offsetWidth||900;
+            const platformWidth = gw - 100; // Todas iguales de largas
+            
+            let configs;
+            
+            switch(world.id){
+                case 'castle':
+                    configs=[
+                        {y:580,x:0,width:gw}, // Suelo completo
+                        {y:460,x:50,width:platformWidth}, // Plataforma 2
+                        {y:340,x:50,width:platformWidth}, // Plataforma 3
+                        {y:220,x:50,width:platformWidth}, // Plataforma 4
+                        {y:100,x:50,width:platformWidth}  // Plataforma meta - IGUAL DE LARGA
+                    ];
+                    break;
+                    
+                case 'forest':
+                    configs=[
+                        {y:580,x:0,width:gw},
+                        {y:465,x:50,width:platformWidth},
+                        {y:350,x:50,width:platformWidth},
+                        {y:240,x:50,width:platformWidth},
+                        {y:110,x:50,width:platformWidth}
+                    ];
+                    break;
+                    
+                case 'ocean':
+                    configs=[
+                        {y:580,x:0,width:gw},
+                        {y:450,x:50,width:platformWidth},
+                        {y:340,x:50,width:platformWidth},
+                        {y:215,x:50,width:platformWidth},
+                        {y:95,x:50,width:platformWidth}
+                    ];
+                    break;
+                    
+                case 'space':
+                    configs=[
+                        {y:580,x:0,width:gw},
+                        {y:460,x:50,width:platformWidth},
+                        {y:335,x:50,width:platformWidth},
+                        {y:210,x:50,width:platformWidth},
+                        {y:90,x:50,width:platformWidth}
+                    ];
+                    break;
+                    
+                case 'candy':
+                    configs=[
+                        {y:580,x:0,width:gw},
+                        {y:475,x:50,width:platformWidth},
+                        {y:365,x:50,width:platformWidth},
+                        {y:250,x:50,width:platformWidth},
+                        {y:120,x:50,width:platformWidth}
+                    ];
+                    break;
+                    
+                default:
+                    configs=[
+                        {y:580,x:0,width:gw},
+                        {y:460,x:50,width:platformWidth},
+                        {y:340,x:50,width:platformWidth},
+                        {y:220,x:50,width:platformWidth},
+                        {y:100,x:50,width:platformWidth}
+                    ];
+            }
+            
+            configs.forEach((c,i)=>{
+                const p=document.createElement('div');
+                p.className=`platform ${world.platformClass}`;
+                p.style.left=c.x+'px';
+                p.style.top=c.y+'px';
+                p.style.width=c.width+'px';
+                gameArea.appendChild(p);
+                platforms.push({x:c.x,y:c.y,width:c.width,height:18});
+            });
+        }
+
+        // ESCALERAS REPARTIDAS - NO CONTINUAS
+        function createLadders(world){
+            const gameArea=document.getElementById('game-area');
+            const ladderClass = world.ladderClass || 'ladder-castle';
+            const gw = gameArea.offsetWidth||900;
+            
+            // Escaleras repartidas en diferentes posiciones X, no alineadas
+            const ladderConfigs = [
+                {x: 120},  // Izquierda
+                {x: 350},  // Centro-izquierda
+                {x: 580},  // Centro-derecha
+                {x: 780}   // Derecha
+            ];
+            
+            // Crear escaleras entre plataformas consecutivas
+            for(let i=0;i<platforms.length-1;i++){
+                const top=platforms[i+1];
+                const bottom=platforms[i];
+                
+                // Seleccionar posición X de la lista repartida
+                const config = ladderConfigs[i % ladderConfigs.length];
+                const xPos = config.x;
+                
+                // Verificar que esté dentro de los límites de la plataforma
+                const clampedX = Math.max(top.x + 20, Math.min(top.x + top.width - 50, xPos));
+                
+                const l=document.createElement('div');
+                l.className=`ladder ${ladderClass}`;
+                l.style.left=Math.floor(clampedX)+'px';
+                l.style.top=top.y+'px';
+                l.style.height=(bottom.y-top.y)+'px';
+                gameArea.appendChild(l);
+                ladders.push({x:Math.floor(clampedX),y:top.y,width:32,height:bottom.y-top.y});
+            }
+        }
+
+        function createGoalZone(){
+            const g=document.createElement('div');
+            g.className='goal-zone';
+            g.textContent='🎯 META';
+            document.getElementById('game-area').appendChild(g);
+        }
+
+        function createPlayerSprite(){
+            const gameArea=document.getElementById('game-area');
+            const p=document.createElement('div');p.className='player';p.id='player-sprite';
+            p.innerHTML=`<div class="player-sprite"><div class="player-head"><div class="player-hair"></div><div class="player-eyes"><div class="player-eye"></div><div class="player-eye"></div></div></div><div class="player-body"></div><div class="player-arms"><div class="player-arm"><div class="player-hand"></div></div><div class="player-arm"><div class="player-hand"></div></div></div><div class="player-legs"><div class="player-leg"><div class="player-shoe"></div></div><div class="player-leg"><div class="player-shoe"></div></div></div></div>`;
+            p.style.left=player.x+'px';p.style.top=player.y+'px';gameArea.appendChild(p);
+        }
+
+        function selectNewWord(){
+            const world=getCurrentWorld();
+            if(world.id==='candy'){
+                const unused=WORD_BANK.diacritica.filter(w=>!gameState.usedWords.has(JSON.stringify(w)));
+                if(unused.length>0){
+                    const sel=unused[Math.floor(Math.random()*unused.length)];
+                    gameState.usedWords.add(JSON.stringify(sel));gameState.currentWord={type:'diacritica',data:sel};
+                    document.getElementById('word-display').textContent=sel.frase.replace('_____','___');return;
+                }
+            }
+            const allWords=[...WORD_BANK.agudas,...WORD_BANK.llanas,...WORD_BANK.esdrujulas,...WORD_BANK.hiatos];
+            const unused=allWords.filter(w=>!gameState.usedWords.has(w.word));
+            let sel;
+            if(unused.length>0){sel=unused[Math.floor(Math.random()*unused.length)];gameState.usedWords.add(sel.word);}
+            else{gameState.usedWords.clear();sel=allWords[Math.floor(Math.random()*allWords.length)];gameState.usedWords.add(sel.word);}
+            gameState.currentWord={type:'normal',data:sel};
+            document.getElementById('word-display').textContent=sel.word.toUpperCase();
+            startTildeSpawner();
+        }
+
+        function getTildeDifficulty(){
+            const level = gameState.currentWorldIndex + 1; // Basado en el mundo
+            const visibleTime = Math.max(1800, 4500 - (level * 200));
+            const hiddenTime = Math.min(2500, 800 + (level * 100));
+            const speed = Math.min(6, 1.8 + (level * 0.5));
+            const fleeSpeed = Math.min(8, 3.5 + (level * 0.6));
+            return { visibleTime, hiddenTime, speed, fleeSpeed };
+        }
+
+        function startTildeSpawner(){
+            if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+            if(gameState.collectedTilde || gameState.currentWord.type==='diacritica') return;
+            spawnTilde();
+        }
+
+        function createTildeHTML() {
+            return `
+                <div class="tilde-sparkles">
+                    <div class="tilde-sparkle"></div>
+                    <div class="tilde-sparkle"></div>
+                    <div class="tilde-sparkle"></div>
+                    <div class="tilde-sparkle"></div>
+                </div>
+                <div class="banana-tilde-body">
+                    <div class="banana-tilde-inner"></div>
+                    <div class="banana-tilde-highlight"></div>
+                    <div class="banana-tilde-tip-top"></div>
+                    <div class="banana-tilde-tip-bottom"></div>
+                    <div class="banana-tilde-face">
+                        <div class="banana-tilde-eyes">
+                            <div class="banana-tilde-eye"><div class="banana-tilde-pupil"></div></div>
+                            <div class="banana-tilde-eye"><div class="banana-tilde-pupil"></div></div>
+                        </div>
+                        <div class="banana-tilde-mouth"></div>
+                    </div>
+                </div>
+                <div class="banana-tilde-legs">
+                    <div class="banana-tilde-leg"><div class="banana-tilde-shoe"></div></div>
+                    <div class="banana-tilde-leg"><div class="banana-tilde-shoe"></div></div>
+                </div>
+            `;
+        }
+
+        function spawnTilde(){
+            if(gameState.collectedTilde || !gameState.isPlaying || gameState.isPaused) return;
+            if(gameState.currentWord && gameState.currentWord.type==='diacritica') return;
+            
+            if(activeTilde && activeTilde.element){
+                activeTilde.element.remove();
+                activeTilde = null;
+            }
+            
+            const gameArea=document.getElementById('game-area');
+            const difficulty = getTildeDifficulty();
+            
+            const t=document.createElement('div');
+            t.className='tilde-character running appearing';
+            t.innerHTML = createTildeHTML();
+            
+            const platIndex = 1 + Math.floor(Math.random() * 3);
+            const plat = platforms[platIndex];
+            
+            const xPos = plat.x + 60 + Math.random() * (plat.width - 120);
+            t.style.left = xPos + 'px';
+            t.style.top = (plat.y - 65) + 'px';
+            
+            gameArea.appendChild(t);
+            playSound('appear');
+            
+            setTimeout(() => {
+                t.classList.remove('appearing');
+            }, 500);
+            
+            activeTilde = {
+                element: t,
+                x: xPos,
+                y: plat.y - 65,
+                width: 50,
+                height: 65,
+                vx: (Math.random() > 0.5 ? 1 : -1) * difficulty.speed,
+                platformIndex: platIndex,
+                visible: true
+            };
+            
+            setTimeout(() => {
+                hideTilde();
+            }, difficulty.visibleTime);
+        }
+
+        function hideTilde(){
+            if(!activeTilde || gameState.collectedTilde) return;
+            
+            playSound('disappear');
+            if(activeTilde.element){
+                activeTilde.element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                activeTilde.element.style.opacity = '0';
+                activeTilde.element.style.transform = 'scale(0.5)';
+                setTimeout(() => {
+                    if(activeTilde && activeTilde.element){
+                        activeTilde.element.remove();
+                        activeTilde = null;
+                    }
+                    const difficulty = getTildeDifficulty();
+                    setTimeout(() => {
+                        if(!gameState.collectedTilde && gameState.isPlaying && !gameState.isPaused){
+                            spawnTilde();
+                        }
+                    }, difficulty.hiddenTime);
+                }, 300);
+            }
+        }
+
+        function startEnemySpawner(){
+            if(enemySpawnInterval)clearInterval(enemySpawnInterval);
+            const rate=Math.max(2000,4500-(gameState.currentWorldIndex*500));
+            enemySpawnInterval=setInterval(()=>{if(!gameState.isPaused&&gameState.isPlaying)spawnEnemy();},rate);
+        }
+
+        function spawnEnemy(){
+            const gameArea=document.getElementById('game-area');const gameWidth=gameArea.offsetWidth||900;
+            const e=document.createElement('div');e.className='enemy pencil-enemy falling';
+            e.innerHTML=`<div class="pencil-top"></div><div class="pencil-body"><div class="pencil-face"><div class="pencil-brows"><div class="pencil-brow"></div><div class="pencil-brow"></div></div><div class="pencil-eyes"><div class="pencil-eye"></div><div class="pencil-eye"></div></div></div></div><div class="pencil-tip"></div>`;
+            const x=80+Math.random()*(gameWidth-160);e.style.left=x+'px';e.style.top='-70px';gameArea.appendChild(e);
+            enemies.push({element:e,x:x,y:-70,width:18,height:70,vy:2.5+Math.random()*2+(gameState.currentWorldIndex*0.5),vx:(Math.random()-0.5)*3});
+        }
+
+        function gameLoop(){
+            if(!gameState.isPlaying)return;
+            if(!gameState.isPaused){update();render();}
+            gameLoopId=requestAnimationFrame(gameLoop);
+        }
+
+        function update(){handleInput();updatePlayer();updateTilde();updateEnemies();checkCollisions();}
+
+        function handleInput(){
+            const ms=player.speed;
+            if(keys['ArrowLeft']||keys['KeyA']||touchStates.left){player.vx=-ms;player.facingRight=false;}
+            else if(keys['ArrowRight']||keys['KeyD']||touchStates.right){player.vx=ms;player.facingRight=true;}
+            else player.vx=0;
+            if(player.onLadder){
+                if(keys['ArrowUp']||keys['KeyW']||touchStates.up){player.vy=-ms*0.7;player.isClimbing=true;}
+                else if(keys['ArrowDown']||keys['KeyS']||touchStates.down){player.vy=ms*0.7;player.isClimbing=true;}
+                else{player.vy=0;player.isClimbing=false;}
+            }
+            if((keys['Space']||touchStates.jump)&&player.onGround&&!player.onLadder){
+                player.vy=player.jumpForce;player.onGround=false;
+                playSound('jump');
+                keys['Space']=false;touchStates.jump=false;
+            }
+        }
+
+        function updatePlayer(){
+            const pe=document.getElementById('player-sprite');if(!pe)return;
+            if(!player.onLadder)player.vy+=player.gravity;
+            player.x+=player.vx;player.y+=player.vy;
+            const ga=document.getElementById('game-area');const gw=ga.offsetWidth||900;const gh=ga.offsetHeight||700;
+            player.x=Math.max(0,Math.min(gw-player.width,player.x));player.y=Math.max(0,Math.min(gh-player.height,player.y));
+            player.onGround=false;player.onLadder=false;
+            ladders.forEach(l=>{if(player.x+player.width>l.x&&player.x<l.x+l.width&&player.y+player.height>l.y&&player.y<l.y+l.height)player.onLadder=true;});
+            const wantsClimbDown=player.onLadder&&(keys['ArrowDown']||keys['KeyS']||touchStates.down);
+            platforms.forEach(p=>{if(!wantsClimbDown&&player.x+player.width>p.x&&player.x<p.x+p.width&&player.y+player.height>p.y&&player.y+player.height<p.y+p.height+15&&player.vy>=0){player.y=p.y-player.height;player.vy=0;player.onGround=true;}});
+            pe.style.left=player.x+'px';pe.style.top=player.y+'px';pe.style.transform=player.facingRight?'scaleX(1)':'scaleX(-1)';
+            
+            const isWalking = Math.abs(player.vx)>0.5&&player.onGround;
+            pe.classList.toggle('walking',isWalking);
+            
+            if(isWalking && Date.now() - lastWalkSound > 250){
+                playSound('walk');
+                lastWalkSound = Date.now();
+            }
+        }
+
+        function updateTilde(){
+            if(!activeTilde||gameState.collectedTilde)return;
+            
+            const difficulty = getTildeDifficulty();
+            const plat=platforms[activeTilde.platformIndex];
+            
+            activeTilde.x+=activeTilde.vx;
+            
+            if(activeTilde.x<plat.x+10){
+                activeTilde.x=plat.x+10;
+                activeTilde.vx*=-1;
+            }
+            if(activeTilde.x>plat.x+plat.width-activeTilde.width-10){
+                activeTilde.x=plat.x+plat.width-activeTilde.width-10;
+                activeTilde.vx*=-1;
+            }
+            
+            const dx=player.x-activeTilde.x,dy=player.y-activeTilde.y,dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<100){
+                activeTilde.vx=(dx>0?-1:1)*difficulty.fleeSpeed;
+            }else if(Math.abs(activeTilde.vx)>difficulty.speed){
+                activeTilde.vx*=0.96;
+            }
+            
+            activeTilde.element.style.left=activeTilde.x+'px';
+            activeTilde.element.style.transform=activeTilde.vx>0?'scaleX(-1)':'scaleX(1)';
+        }
+
+        function updateEnemies(){
+            const ga=document.getElementById('game-area');const gh=ga.offsetHeight||700;const gw=ga.offsetWidth||900;
+            enemies.forEach((e,i)=>{
+                e.y+=e.vy;e.x+=e.vx;if(e.x<0||e.x>gw-e.width)e.vx*=-1;
+                e.element.style.left=e.x+'px';e.element.style.top=e.y+'px';
+                if(e.y>gh){e.element.remove();enemies.splice(i,1);}
+            });
+        }
+
+        function checkCollisions(){
+            if(activeTilde&&!gameState.collectedTilde&&player.x<activeTilde.x+activeTilde.width&&player.x+player.width>activeTilde.x&&player.y<activeTilde.y+activeTilde.height&&player.y+player.height>activeTilde.y)collectTilde();
+            enemies.forEach(e=>{if(player.x<e.x+e.width&&player.x+player.width>e.x&&player.y<e.y+e.height&&player.y+player.height>e.y)hitByEnemy();});
+            const canReachGoal=gameState.collectedTilde||(gameState.currentWord&&gameState.currentWord.type==='diacritica');
+            if(player.y<120&&canReachGoal)reachGoal();
+        }
+
+        function collectTilde(){
+            gameState.collectedTilde=true;
+            activeTilde.element.classList.remove('running');
+            activeTilde.element.classList.add('collected');
+            playSound('collect');
+            if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+            setTimeout(()=>{if(activeTilde){activeTilde.element.remove();activeTilde=null;}},500);
+            updateCollectedIndicator();
+        }
+
+        function updateCollectedIndicator(){
+            const ind=document.getElementById('collected-indicator');const pre=document.getElementById('collected-preview');
+            if(gameState.collectedTilde){pre.textContent='´';ind.classList.add('active');}else ind.classList.remove('active');
+        }
+
+        function reachGoal(){
+            gameState.isPaused=true;const world=getCurrentWorld();
+            if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+            playSound('click');
+            if(world.id==='candy')showDiacriticModal();else showTildeModal();
+        }
+
+        function showTildeModal(){
+            const m=document.getElementById('tilde-modal');const wc=document.getElementById('tilde-word');
+            const word=gameState.currentWord.data.word;wc.innerHTML='';
+            const vowels='aeiouAEIOU';
+            for(let i=0;i<word.length;i++){
+                const s=document.createElement('span');s.className='letter-box';s.textContent=word[i].toUpperCase();s.dataset.index=i;
+                if(vowels.includes(word[i])){s.classList.add('vowel');s.onclick=()=>selectVowel(s,i);}
+                wc.appendChild(s);
+            }
+            gameState.selectedVowelIndex=-1;document.getElementById('tilde-confirm-btn').disabled=true;m.classList.add('active');
+        }
+
+        function selectVowel(el,idx){
+            playSound('click');
+            document.querySelectorAll('#tilde-word .letter-box').forEach(l=>l.classList.remove('selected'));
+            el.classList.add('selected');gameState.selectedVowelIndex=idx;document.getElementById('tilde-confirm-btn').disabled=false;
+        }
+
+        function confirmTildePlacement(){
+            if(gameState.selectedVowelIndex<0)return;
+            playSound('click');
+            const word=gameState.currentWord.data.word;const correct=gameState.currentWord.data.correct;
+            const map={'a':'á','e':'é','i':'í','o':'ó','u':'ú'};
+            let attempt='';for(let i=0;i<word.length;i++)attempt+=(i===gameState.selectedVowelIndex&&map[word[i].toLowerCase()])?map[word[i].toLowerCase()]:word[i];
+            gameState.tildeCorrect=attempt.toLowerCase()===correct.toLowerCase();gameState.accentedWord=gameState.tildeCorrect?correct:attempt;
+            document.getElementById('tilde-modal').classList.remove('active');showClassifyModal();
+        }
+
+        function showClassifyModal(){
+            document.getElementById('classify-word-display').textContent=gameState.accentedWord.toUpperCase();
+            document.querySelectorAll('.class-option').forEach(o=>o.classList.remove('selected'));
+            gameState.selectedClassification=null;document.getElementById('class-confirm-btn').disabled=true;
+            document.getElementById('classify-modal').classList.add('active');
+        }
+
+        function selectClassification(type){
+            playSound('click');
+            document.querySelectorAll('.class-option').forEach(o=>o.classList.remove('selected'));
+            event.target.classList.add('selected');gameState.selectedClassification=type;document.getElementById('class-confirm-btn').disabled=false;
+        }
+
+        function confirmClassification(){
+            if(!gameState.selectedClassification)return;
+            const correctType=gameState.currentWord.data.type;const classCorrect=gameState.selectedClassification===correctType;
+            document.getElementById('classify-modal').classList.remove('active');
+            if(gameState.tildeCorrect&&classCorrect){playSound('correct');showFeedback(true,'¡PERFECTO!');addScore(150);nextWord();}
+            else if(gameState.tildeCorrect){playSound('correct');showFeedback(true,'¡BIEN! +50');addScore(50);nextWord();}
+            else{playSound('wrong');showFeedback(false,'¡INCORRECTO!');loseLife();}
+        }
+
+        function showDiacriticModal(){
+            const m=document.getElementById('diacritic-modal');const s=document.getElementById('diacritic-sentence');const o=document.getElementById('diacritic-options');
+            const d=gameState.currentWord.data;s.textContent=d.frase;o.innerHTML='';
+            [d.correcta,d.incorrecta].sort(()=>Math.random()-0.5).forEach(opt=>{
+                const b=document.createElement('button');b.className='diacritic-btn';b.textContent=opt;
+                b.onclick=()=>checkDiacriticAnswer(opt,d.correcta);o.appendChild(b);
+            });
+            m.classList.add('active');
+        }
+
+        function checkDiacriticAnswer(sel,cor){
+            document.getElementById('diacritic-modal').classList.remove('active');
+            if(sel===cor){playSound('correct');showFeedback(true,'¡CORRECTO!');addScore(100);nextWord();}
+            else{playSound('wrong');showFeedback(false,'¡INCORRECTO!');loseLife();}
+        }
+
+        function showFeedback(success,text){
+            const f=document.getElementById('feedback');f.textContent=text;f.className='feedback '+(success?'show-correct':'show-incorrect');
+            setTimeout(()=>f.className='feedback',1200);
+        }
+
+        function addScore(pts){gameState.players[gameState.currentPlayer].score+=pts;updateHUD();}
+
+        // CAMBIO IMPORTANTE: Cambiar de mundo cada 3 palabras
+        function nextWord(){
+            gameState.wordsInCurrentWorld++;
+            const world = getCurrentWorld();
+            
+            // Cambiar de mundo cada 3 palabras
+            if(gameState.wordsInCurrentWorld >= world.wordsPerWorld){
+                gameState.wordsInCurrentWorld = 0;
+                gameState.currentWorldIndex++;
+                
+                // Si hemos pasado todos los mundos, volver al primero o terminar
+                if(gameState.currentWorldIndex >= WORLDS.length){
+                    // Opción 1: Volver al primer mundo (bucle infinito hasta que se acaben las vidas)
+                    // gameState.currentWorldIndex = 0;
+                    // Opción 2: Terminar el juego
+                    endGame();
+                    return;
+                }
+                
+                showWorldIntro();
+            } else {
+                resetForNextWord();
+            }
+        }
+
+        function resetForNextWord(){
+            player.x=100;player.y=520;player.vx=0;player.vy=0;
+            gameState.collectedTilde=false;gameState.isPaused=false;
+            if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+            updateCollectedIndicator();selectNewWord();
+        }
+
+        function hitByEnemy(){
+            playSound('hit');
+            loseLife();
+        }
+
+        function loseLife(){
+            gameState.players[gameState.currentPlayer].lives--;updateHUD();
+            if(gameState.players[gameState.currentPlayer].lives<=0)playerEliminated();else switchPlayer();
+        }
+
+        function switchPlayer(){
+            let next=(gameState.currentPlayer+1)%gameState.numPlayers;let att=0;
+            while(gameState.players[next].lives<=0&&att<gameState.numPlayers){next=(next+1)%gameState.numPlayers;att++;}
+            if(att>=gameState.numPlayers||gameState.numPlayers===1){resetPlayerPosition();return;}
+            gameState.currentPlayer=next;
+            document.getElementById('transition-player').textContent=`Jugador ${gameState.currentPlayer+1}`;
+            document.getElementById('player-transition').classList.add('active');gameState.isPaused=true;
+        }
+
+        function continueAfterTransition(){
+            playSound('click');
+            document.getElementById('player-transition').classList.remove('active');gameState.isPaused=false;resetPlayerPosition();updateHUD();
+        }
+
+        function resetPlayerPosition(){
+            player.x=100;player.y=520;player.vx=0;player.vy=0;gameState.collectedTilde=false;gameState.isPaused=false;updateCollectedIndicator();
+            if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
+            if(gameState.currentWord&&gameState.currentWord.type!=='diacritica')startTildeSpawner();
+        }
+
+        function playerEliminated(){const alive=gameState.players.filter(p=>p.lives>0);if(alive.length===0)endGame();else switchPlayer();}
+
+        function endGame(){
+            gameState.isPlaying=false;
+            if(enemySpawnInterval)clearInterval(enemySpawnInterval);
+            if(tildeInterval)clearInterval(tildeInterval);
+            if(gameLoopId)cancelAnimationFrame(gameLoopId);
+            playSound('levelup');
+            showResults();
+        }
+
+        function showResults(){
+            const rc=document.getElementById('results-content');
+            if(gameState.mode==='cooperative'){
+                const total=gameState.players.reduce((s,p)=>s+p.score,0);const success=total>=gameState.coopGoal;
+                rc.innerHTML=`<div class="coop-result"><div class="coop-total">${total} puntos</div><div class="coop-goal">Objetivo: ${gameState.coopGoal}</div><div class="coop-status">${success?'🎉 ¡CONSEGUIDO!':'😢 ¡Casi!'}</div></div>`;
+            }else{
+                const sorted=[...gameState.players].sort((a,b)=>b.score-a.score);
+                let html='<div class="podium">';
+                if(sorted.length>=2)html+=`<div class="podium-place second"><div class="podium-medal">🥈</div><div class="podium-name">${sorted[1].name}</div><div class="podium-score">${sorted[1].score}</div></div>`;
+                html+=`<div class="podium-place first"><div class="podium-medal">🥇</div><div class="podium-name">${sorted[0].name}</div><div class="podium-score">${sorted[0].score}</div></div>`;
+                if(sorted.length>=3)html+=`<div class="podium-place third"><div class="podium-medal">🥉</div><div class="podium-name">${sorted[2].name}</div><div class="podium-score">${sorted[2].score}</div></div>`;
+                html+='</div>';rc.innerHTML=html;
+            }
+            showScreen('results-screen');
+        }
+
+        function updateHUD(){
+            const cp=gameState.players[gameState.currentPlayer];
+            document.getElementById('current-player-badge').textContent=`J${gameState.currentPlayer+1}`;
+            const ld=document.getElementById('lives-display');ld.innerHTML='';
+            for(let i=0;i<3;i++){const h=document.createElement('span');h.className='heart'+(i>=cp.lives?' lost':'');h.textContent='❤️';ld.appendChild(h);}
+            document.getElementById('score-display').textContent=cp.score;
+            document.getElementById('level-display').textContent=`${gameState.currentWorldIndex+1}/${WORLDS.length}`;
+            document.getElementById('world-badge').textContent=getCurrentWorld().name;
+        }
+
+        function render(){}
+        function pauseGame(){
+            gameState.isPaused=true;
+            document.getElementById('pause-overlay').classList.add('active');
+        }
+        function resumeGame(){
+            playSound('click');
+            gameState.isPaused=false;
+            document.getElementById('pause-overlay').classList.remove('active');
+        }
+        function quitToMenu(){
+            playSound('click');
+            gameState.isPlaying=false;
+            if(enemySpawnInterval)clearInterval(enemySpawnInterval);
+            if(tildeInterval)clearInterval(tildeInterval);
+            if(gameLoopId)cancelAnimationFrame(gameLoopId);
+            document.getElementById('pause-overlay').classList.remove('active');
+            showScreen('menu-screen');
+        }
+        function playAgain(){
+            playSound('click');
+            showScreen('players-screen');
+        }
+
+        document.addEventListener('keydown',e=>{
+            keys[e.code]=true;
+            if(e.code==='Escape'&&gameState.isPlaying){
+                const modalsOpen=document.getElementById('tilde-modal').classList.contains('active')||document.getElementById('classify-modal').classList.contains('active')||document.getElementById('diacritic-modal').classList.contains('active');
+                if(gameState.isPaused&&!modalsOpen)resumeGame();else if(!gameState.isPaused)pauseGame();
+            }
+            if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code))e.preventDefault();
+        });
+        document.addEventListener('keyup',e=>keys[e.code]=false);
+
+        function setupTouchControls(){
+            const btns={'btn-left':'left','btn-right':'right','btn-up':'up','btn-down':'down','btn-jump':'jump'};
+            Object.entries(btns).forEach(([id,st])=>{
+                const b=document.getElementById(id);if(b){
+                    b.addEventListener('touchstart',e=>{e.preventDefault();touchStates[st]=true;});
+                    b.addEventListener('touchend',e=>{e.preventDefault();touchStates[st]=false;});
+                    b.addEventListener('touchcancel',()=>touchStates[st]=false);
+                    b.addEventListener('mousedown',()=>touchStates[st]=true);
+                    b.addEventListener('mouseup',()=>touchStates[st]=false);
+                    b.addEventListener('mouseleave',()=>touchStates[st]=false);
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded',setupTouchControls);
+        document.addEventListener('touchmove',e=>{if(e.scale!==1)e.preventDefault();},{passive:false});
+
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('touchstart', initAudio, { once: true });
+    </script>
 </body>
 </html>
