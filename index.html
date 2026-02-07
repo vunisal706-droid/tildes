@@ -10,6 +10,7 @@
         :root {
             --primary: #FF6B35; --secondary: #4ECDC4; --accent: #FFE66D;
             --dark: #2C3E50; --danger: #E74C3C; --success: #27AE60;
+            --powerup: #9C27B0; --combo: #FF5722;
         }
         body {
             font-family: 'Nunito', sans-serif;
@@ -112,7 +113,7 @@
         .current-player { background: var(--accent); color: var(--dark); padding: 4px 12px; border-radius: 15px; font-weight: 800; }
         .lives-display { display: flex; gap: 2px; }
         .heart { font-size: 1.1rem; transition: all 0.3s ease; }
-        .heart.lost { opacity: 0.3; transform: scale(0.7); }
+        .heart.lost { opacity: 0.3; transform: scale(0.7); filter: grayscale(1); }
         .world-badge { background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 10px; font-size: 0.85rem; }
         .word-badge {
             position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
@@ -580,6 +581,187 @@
             background: rgba(255,255,255,0.35);
             transform: scale(1.1);
         }
+
+        /* NUEVOS ELEMENTOS ADICTIVOS */
+        
+        /* Sistema de Combo */
+        .combo-display {
+            position: absolute;
+            top: 50px;
+            left: 15px;
+            background: linear-gradient(135deg, var(--combo) 0%, #D84315 100%);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            animation: comboPulse 0.5s ease;
+            box-shadow: 0 4px 15px rgba(255,87,34,0.4);
+        }
+        .combo-display.active { display: flex; }
+        .combo-display span { color: white; font-weight: 800; font-size: 1rem; }
+        .combo-count { font-size: 1.3rem !important; text-shadow: 2px 2px 0 rgba(0,0,0,0.2); }
+        @keyframes comboPulse {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Power-ups */
+        .powerup {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            z-index: 16;
+            cursor: pointer;
+            animation: powerupFloat 2s ease-in-out infinite, powerupGlow 1.5s ease-in-out infinite;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 0 20px rgba(156,39,176,0.6);
+        }
+        @keyframes powerupFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes powerupGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(156,39,176,0.6); }
+            50% { box-shadow: 0 0 30px rgba(156,39,176,0.9), 0 0 40px rgba(156,39,176,0.4); }
+        }
+        .powerup-shield { background: linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%); }
+        .powerup-speed { background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); }
+        .powerup-magnet { background: linear-gradient(135deg, #AB47BC 0%, #8E24AA 100%); }
+        .powerup-time { background: linear-gradient(135deg, #FFA726 0%, #FB8C00 100%); }
+
+        /* Efectos de power-up activos */
+        .player.shielded .player-body {
+            box-shadow: 0 0 0 4px #42A5F5, 0 0 20px #42A5F5;
+            animation: shieldPulse 1s ease-in-out infinite;
+        }
+        @keyframes shieldPulse {
+            0%, 100% { box-shadow: 0 0 0 4px #42A5F5, 0 0 20px #42A5F5; }
+            50% { box-shadow: 0 0 0 8px #42A5F5, 0 0 30px #42A5F5; }
+        }
+        .player.speed-boost {
+            filter: drop-shadow(0 0 10px #66BB6A);
+        }
+
+        /* Partículas de explosión */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        @keyframes particleExplode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+
+        /* Timer para la tilde */
+        .tilde-timer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 4px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .tilde-timer-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            transition: width 0.1s linear;
+        }
+
+        /* Multiplicador de puntos flotante */
+        .floating-score {
+            position: absolute;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            color: var(--accent);
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            pointer-events: none;
+            z-index: 300;
+            animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.2); opacity: 0; }
+        }
+
+        /* Barra de progreso del mundo */
+        .world-progress {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 100;
+        }
+        .world-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, #FFB300 100%);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        /* Streak de respuestas correctas */
+        .streak-indicator {
+            position: absolute;
+            top: 85px;
+            right: 15px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            padding: 5px 12px;
+            border-radius: 15px;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            z-index: 100;
+            animation: streakBounce 0.5s ease;
+        }
+        .streak-indicator.active { display: flex; }
+        .streak-indicator span { color: var(--dark); font-weight: 800; font-size: 0.9rem; }
+        @keyframes streakBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Mensaje de nivel perfecto */
+        .perfect-level {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FFD700 0%, #FF8F00 100%);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+            z-index: 400;
+            display: none;
+            animation: perfectPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.4);
+        }
+        .perfect-level.active { display: block; }
+        @keyframes perfectPop {
+            0% { transform: translateX(-50%) scale(0) rotate(-10deg); }
+            70% { transform: translateX(-50%) scale(1.1) rotate(5deg); }
+            100% { transform: translateX(-50%) scale(1) rotate(0); }
+        }
     </style>
 </head>
 <body>
@@ -604,6 +786,13 @@
                 <p><span class="key-icon">←</span> <span class="key-icon">→</span> Mover</p>
                 <p><span class="key-icon">↑</span> <span class="key-icon">↓</span> Subir/Bajar escalera</p>
                 <p><span class="key-icon">Espacio</span> Saltar</p>
+                <h3>⚡ Power-ups</h3>
+                <p>🛡️ Escudo - Protección temporal</p>
+                <p>⚡ Velocidad - Corre más rápido</p>
+                <p>🧲 Imán - Atrae la tilde</p>
+                <p>⏰ Tiempo - La tilde dura más</p>
+                <h3>🔥 Combo</h3>
+                <p>¡Responde correctamente varias veces seguidas para multiplicar tus puntos!</p>
                 <h3>⚠️ ¡Cuidado!</h3>
                 <p>Esquiva los lápices enfadados que caen.</p>
             </div>
@@ -638,6 +827,20 @@
                     <div class="hud-item">📊 <span id="level-display">1/25</span></div>
                 </div>
             </div>
+            <!-- Nuevos elementos de HUD -->
+            <div class="combo-display" id="combo-display">
+                <span>🔥</span>
+                <span class="combo-count" id="combo-count">x2</span>
+            </div>
+            <div class="streak-indicator" id="streak-indicator">
+                <span>⚡</span>
+                <span id="streak-count">3</span>
+            </div>
+            <div class="world-progress" id="world-progress">
+                <div class="world-progress-bar" id="world-progress-bar" style="width: 0%"></div>
+            </div>
+            <div class="perfect-level" id="perfect-level">🌟 ¡NIVEL PERFECTO! 🌟</div>
+            
             <div class="collected-indicator" id="collected-indicator"><span>Tilde:</span><div class="collected-preview" id="collected-preview">´</div></div>
             <div id="game-area"></div>
             <div class="word-badge"><span class="word-badge-text" id="word-display">palabra</span></div>
@@ -719,6 +922,12 @@
                     break;
                 case 'walk':
                     playTone([100, 120], [0.03, 0.03], 'triangle', 0.1);
+                    break;
+                case 'powerup':
+                    playTone([440, 554, 659, 880], [0.1, 0.1, 0.1, 0.3], 'sine', 0.4);
+                    break;
+                case 'combo':
+                    playTone([523, 659, 784, 1047, 1319], [0.08, 0.08, 0.08, 0.08, 0.2], 'sine', 0.5);
                     break;
             }
         }
@@ -917,7 +1126,13 @@
             wordsInCurrentWorld:0, // Contador de palabras en el mundo actual
             isPlaying:false,isPaused:false,currentWord:null,collectedTilde:false,
             usedWords:new Set(),coopGoal:500,
-            selectedVowelIndex:-1,selectedClassification:null,tildeCorrect:false,accentedWord:''
+            selectedVowelIndex:-1,selectedClassification:null,tildeCorrect:false,accentedWord:'',
+            // Nuevos elementos adictivos
+            combo:0,
+            streak:0,
+            powerups:[],
+            activeEffects:{shield:false,speed:false,magnet:false,time:false},
+            perfectLevel:true // Se pone a false si falla una vez
         };
 
         let player = {x:100,y:500,vx:0,vy:0,width:40,height:55,speed:5,jumpForce:-13,gravity:0.6,onGround:false,onLadder:false,isClimbing:false,facingRight:true};
@@ -952,6 +1167,11 @@
             gameState.wordsInCurrentWorld=0;
             gameState.usedWords=new Set();
             gameState.isPlaying=true;
+            // Resetear elementos adictivos
+            gameState.combo = 0;
+            gameState.streak = 0;
+            gameState.perfectLevel = true;
+            gameState.activeEffects = {shield:false,speed:false,magnet:false,time:false};
             if('ontouchstart' in window)document.getElementById('touch-controls').classList.add('active');
             showScreen('game-screen');showWorldIntro();
         }
@@ -972,13 +1192,17 @@
 
         function initLevel(){
             const gameArea=document.getElementById('game-area');gameArea.innerHTML='';
-            platforms=[];ladders=[];activeTilde=null;enemies=[];
+            platforms=[];ladders=[];activeTilde=null;enemies=[];gameState.powerups=[];
             if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
             const world=getCurrentWorld();
             createWorldBackground(world);createPlatforms(world);createLadders(world);createGoalZone();
             player.x=100;player.y=520;player.vx=0;player.vy=0;gameState.collectedTilde=false;gameState.isPaused=false;
+            // Resetear efectos al iniciar nivel
+            gameState.activeEffects = {shield:false,speed:false,magnet:false,time:false};
+            gameState.perfectLevel = true;
             createPlayerSprite();updateHUD();updateCollectedIndicator();selectNewWord();
             if(gameLoopId)cancelAnimationFrame(gameLoopId);gameLoop();startEnemySpawner();
+            startPowerupSpawner();
         }
 
         // FONDOS ÚNICOS POR MUNDO
@@ -1035,7 +1259,7 @@
             gameArea.appendChild(bg);
         }
 
-        // PLATAFORMAS - TODAS IGUALES DE LARGAS COMO EN EL ORIGINAL
+        // PLATAFORMAS - TODAS IGUALES DE LARGAS
         function createPlatforms(world){
             const gameArea=document.getElementById('game-area');
             const gw=gameArea.offsetWidth||900;
@@ -1115,39 +1339,38 @@
             });
         }
 
-        // ESCALERAS REPARTIDAS - NO CONTINUAS
+        // ESCALERAS - AHORA 2 POR PLATAFORMA
         function createLadders(world){
             const gameArea=document.getElementById('game-area');
             const ladderClass = world.ladderClass || 'ladder-castle';
             const gw = gameArea.offsetWidth||900;
             
-            // Escaleras repartidas en diferentes posiciones X, no alineadas
-            const ladderConfigs = [
-                {x: 120},  // Izquierda
-                {x: 350},  // Centro-izquierda
-                {x: 580},  // Centro-derecha
-                {x: 780}   // Derecha
-            ];
-            
-            // Crear escaleras entre plataformas consecutivas
+            // Crear 2 escaleras entre cada par de plataformas
             for(let i=0;i<platforms.length-1;i++){
                 const top=platforms[i+1];
                 const bottom=platforms[i];
                 
-                // Seleccionar posición X de la lista repartida
-                const config = ladderConfigs[i % ladderConfigs.length];
-                const xPos = config.x;
+                // Primera escalera - izquierda
+                const xPos1 = top.x + 80 + Math.random() * 50;
+                const l1=document.createElement('div');
+                l1.className=`ladder ${ladderClass}`;
+                l1.style.left=Math.floor(xPos1)+'px';
+                l1.style.top=top.y+'px';
+                l1.style.height=(bottom.y-top.y)+'px';
+                gameArea.appendChild(l1);
+                ladders.push({x:Math.floor(xPos1),y:top.y,width:32,height:bottom.y-top.y});
                 
-                // Verificar que esté dentro de los límites de la plataforma
-                const clampedX = Math.max(top.x + 20, Math.min(top.x + top.width - 50, xPos));
-                
-                const l=document.createElement('div');
-                l.className=`ladder ${ladderClass}`;
-                l.style.left=Math.floor(clampedX)+'px';
-                l.style.top=top.y+'px';
-                l.style.height=(bottom.y-top.y)+'px';
-                gameArea.appendChild(l);
-                ladders.push({x:Math.floor(clampedX),y:top.y,width:32,height:bottom.y-top.y});
+                // Segunda escalera - derecha (si hay espacio)
+                const xPos2 = top.x + top.width - 130 - Math.random() * 50;
+                if(xPos2 > xPos1 + 80) { // Solo si hay suficiente espacio
+                    const l2=document.createElement('div');
+                    l2.className=`ladder ${ladderClass}`;
+                    l2.style.left=Math.floor(xPos2)+'px';
+                    l2.style.top=top.y+'px';
+                    l2.style.height=(bottom.y-top.y)+'px';
+                    gameArea.appendChild(l2);
+                    ladders.push({x:Math.floor(xPos2),y:top.y,width:32,height:bottom.y-top.y});
+                }
             }
         }
 
@@ -1187,10 +1410,16 @@
 
         function getTildeDifficulty(){
             const level = gameState.currentWorldIndex + 1; // Basado en el mundo
-            const visibleTime = Math.max(1800, 4500 - (level * 200));
-            const hiddenTime = Math.min(2500, 800 + (level * 100));
-            const speed = Math.min(6, 1.8 + (level * 0.5));
-            const fleeSpeed = Math.min(8, 3.5 + (level * 0.6));
+            let visibleTime = Math.max(1800, 4500 - (level * 200));
+            let hiddenTime = Math.min(2500, 800 + (level * 100));
+            let speed = Math.min(6, 1.8 + (level * 0.5));
+            let fleeSpeed = Math.min(8, 3.5 + (level * 0.6));
+            
+            // Power-up de tiempo
+            if(gameState.activeEffects.time) {
+                visibleTime *= 1.5;
+            }
+            
             return { visibleTime, hiddenTime, speed, fleeSpeed };
         }
 
@@ -1225,6 +1454,7 @@
                     <div class="banana-tilde-leg"><div class="banana-tilde-shoe"></div></div>
                     <div class="banana-tilde-leg"><div class="banana-tilde-shoe"></div></div>
                 </div>
+                <div class="tilde-timer"><div class="tilde-timer-bar" id="tilde-timer-bar"></div></div>
             `;
         }
 
@@ -1266,8 +1496,26 @@
                 height: 65,
                 vx: (Math.random() > 0.5 ? 1 : -1) * difficulty.speed,
                 platformIndex: platIndex,
-                visible: true
+                visible: true,
+                spawnTime: Date.now(),
+                visibleDuration: difficulty.visibleTime
             };
+            
+            // Timer visual
+            const timerBar = t.querySelector('#tilde-timer-bar');
+            if(timerBar) {
+                let elapsed = 0;
+                const timerInterval = setInterval(() => {
+                    if(!activeTilde || gameState.collectedTilde) {
+                        clearInterval(timerInterval);
+                        return;
+                    }
+                    elapsed += 100;
+                    const remaining = Math.max(0, 1 - (elapsed / difficulty.visibleTime));
+                    timerBar.style.width = (remaining * 100) + '%';
+                    if(remaining < 0.3) timerBar.style.background = 'linear-gradient(90deg, #f44336 0%, #ff5722 100%)';
+                }, 100);
+            }
             
             setTimeout(() => {
                 hideTilde();
@@ -1297,6 +1545,117 @@
             }
         }
 
+        // NUEVO: Sistema de Power-ups
+        function startPowerupSpawner(){
+            setInterval(() => {
+                if(!gameState.isPlaying || gameState.isPaused || gameState.collectedTilde) return;
+                if(Math.random() > 0.7) spawnPowerup(); // 30% de probabilidad cada intervalo
+            }, 8000);
+        }
+
+        function spawnPowerup(){
+            const gameArea = document.getElementById('game-area');
+            const types = [
+                {type: 'shield', icon: '🛡️', class: 'powerup-shield', duration: 10000},
+                {type: 'speed', icon: '⚡', class: 'powerup-speed', duration: 8000},
+                {type: 'magnet', icon: '🧲', class: 'powerup-magnet', duration: 6000},
+                {type: 'time', icon: '⏰', class: 'powerup-time', duration: 0}
+            ];
+            
+            const powerupType = types[Math.floor(Math.random() * types.length)];
+            const platIndex = 1 + Math.floor(Math.random() * 3);
+            const plat = platforms[platIndex];
+            
+            const p = document.createElement('div');
+            p.className = `powerup ${powerupType.class}`;
+            p.textContent = powerupType.icon;
+            p.dataset.type = powerupType.type;
+            p.dataset.duration = powerupType.duration;
+            
+            const xPos = plat.x + 100 + Math.random() * (plat.width - 200);
+            p.style.left = xPos + 'px';
+            p.style.top = (plat.y - 40) + 'px';
+            
+            gameArea.appendChild(p);
+            gameState.powerups.push({
+                element: p,
+                x: xPos,
+                y: plat.y - 40,
+                width: 35,
+                height: 35,
+                type: powerupType.type,
+                duration: powerupType.duration
+            });
+            
+            // Desaparecer después de 5 segundos si no se recoge
+            setTimeout(() => {
+                if(p.parentNode) {
+                    p.style.animation = 'disappear 0.3s ease forwards';
+                    setTimeout(() => p.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        function collectPowerup(powerup){
+            playSound('powerup');
+            createParticles(powerup.x + 17, powerup.y + 17, '#9C27B0');
+            
+            switch(powerup.type){
+                case 'shield':
+                    gameState.activeEffects.shield = true;
+                    document.getElementById('player-sprite').classList.add('shielded');
+                    setTimeout(() => {
+                        gameState.activeEffects.shield = false;
+                        document.getElementById('player-sprite').classList.remove('shielded');
+                    }, powerup.duration);
+                    break;
+                case 'speed':
+                    gameState.activeEffects.speed = true;
+                    player.speed = 8; // Velocidad aumentada
+                    document.getElementById('player-sprite').classList.add('speed-boost');
+                    setTimeout(() => {
+                        gameState.activeEffects.speed = false;
+                        player.speed = 5;
+                        document.getElementById('player-sprite').classList.remove('speed-boost');
+                    }, powerup.duration);
+                    break;
+                case 'magnet':
+                    gameState.activeEffects.magnet = true;
+                    setTimeout(() => {
+                        gameState.activeEffects.magnet = false;
+                    }, powerup.duration);
+                    break;
+                case 'time':
+                    gameState.activeEffects.time = true;
+                    // El tiempo se maneja en getTildeDifficulty
+                    setTimeout(() => {
+                        gameState.activeEffects.time = false;
+                    }, 10000);
+                    break;
+            }
+            
+            powerup.element.remove();
+            gameState.powerups = gameState.powerups.filter(p => p !== powerup);
+        }
+
+        function createParticles(x, y, color){
+            const gameArea = document.getElementById('game-area');
+            for(let i = 0; i < 8; i++){
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = color;
+                const angle = (i / 8) * Math.PI * 2;
+                const distance = 30 + Math.random() * 20;
+                particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+                particle.style.animation = `particleExplode 0.6s ease-out forwards`;
+                gameArea.appendChild(particle);
+                setTimeout(() => particle.remove(), 600);
+            }
+        }
+
         function startEnemySpawner(){
             if(enemySpawnInterval)clearInterval(enemySpawnInterval);
             const rate=Math.max(2000,4500-(gameState.currentWorldIndex*500));
@@ -1317,10 +1676,25 @@
             gameLoopId=requestAnimationFrame(gameLoop);
         }
 
-        function update(){handleInput();updatePlayer();updateTilde();updateEnemies();checkCollisions();}
+        function update(){handleInput();updatePlayer();updateTilde();updateEnemies();checkCollisions();updatePowerups();}
+
+        function updatePowerups(){
+            // Efecto de imán
+            if(gameState.activeEffects.magnet && activeTilde && !gameState.collectedTilde){
+                const dx = player.x - activeTilde.x;
+                const dy = player.y - activeTilde.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 150 && dist > 10){
+                    activeTilde.x += (dx / dist) * 3;
+                    activeTilde.y += (dy / dist) * 3;
+                    activeTilde.element.style.left = activeTilde.x + 'px';
+                    activeTilde.element.style.top = activeTilde.y + 'px';
+                }
+            }
+        }
 
         function handleInput(){
-            const ms=player.speed;
+            const ms = gameState.activeEffects.speed ? 8 : 5;
             if(keys['ArrowLeft']||keys['KeyA']||touchStates.left){player.vx=-ms;player.facingRight=false;}
             else if(keys['ArrowRight']||keys['KeyD']||touchStates.right){player.vx=ms;player.facingRight=true;}
             else player.vx=0;
@@ -1395,8 +1769,33 @@
         }
 
         function checkCollisions(){
+            // Colisión con tilde
             if(activeTilde&&!gameState.collectedTilde&&player.x<activeTilde.x+activeTilde.width&&player.x+player.width>activeTilde.x&&player.y<activeTilde.y+activeTilde.height&&player.y+player.height>activeTilde.y)collectTilde();
-            enemies.forEach(e=>{if(player.x<e.x+e.width&&player.x+player.width>e.x&&player.y<e.y+e.height&&player.y+player.height>e.y)hitByEnemy();});
+            
+            // Colisión con power-ups
+            gameState.powerups.forEach(p => {
+                if(player.x < p.x + p.width && player.x + player.width > p.x &&
+                   player.y < p.y + p.height && player.y + player.height > p.y){
+                    collectPowerup(p);
+                }
+            });
+            
+            // Colisión con enemigos
+            enemies.forEach((e, i)=>{
+                if(player.x<e.x+e.width&&player.x+player.width>e.x&&player.y<e.y+e.height&&player.y+player.height>e.y){
+                    if(gameState.activeEffects.shield){
+                        // Destruir enemigo con escudo
+                        createParticles(e.x + 9, e.y + 35, '#FDD835');
+                        e.element.remove();
+                        enemies.splice(i, 1);
+                        playSound('hit');
+                        addScore(25); // Bonus por destruir enemigo
+                    } else {
+                        hitByEnemy();
+                    }
+                }
+            });
+            
             const canReachGoal=gameState.collectedTilde||(gameState.currentWord&&gameState.currentWord.type==='diacritica');
             if(player.y<120&&canReachGoal)reachGoal();
         }
@@ -1406,6 +1805,7 @@
             activeTilde.element.classList.remove('running');
             activeTilde.element.classList.add('collected');
             playSound('collect');
+            createParticles(activeTilde.x + 25, activeTilde.y + 32, '#FFD54F');
             if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
             setTimeout(()=>{if(activeTilde){activeTilde.element.remove();activeTilde=null;}},500);
             updateCollectedIndicator();
@@ -1468,9 +1868,73 @@
             if(!gameState.selectedClassification)return;
             const correctType=gameState.currentWord.data.type;const classCorrect=gameState.selectedClassification===correctType;
             document.getElementById('classify-modal').classList.remove('active');
-            if(gameState.tildeCorrect&&classCorrect){playSound('correct');showFeedback(true,'¡PERFECTO!');addScore(150);nextWord();}
-            else if(gameState.tildeCorrect){playSound('correct');showFeedback(true,'¡BIEN! +50');addScore(50);nextWord();}
-            else{playSound('wrong');showFeedback(false,'¡INCORRECTO!');loseLife();}
+            
+            // Sistema de puntuación mejorado con combo
+            let basePoints = 0;
+            let multiplier = 1 + Math.floor(gameState.combo / 3); // Multiplicador cada 3 aciertos
+            
+            if(gameState.tildeCorrect&&classCorrect){
+                basePoints = 150;
+                gameState.streak++;
+                gameState.combo++;
+                playSound('correct');
+                showFeedback(true,`¡PERFECTO! x${multiplier}`);
+                createFloatingScore(player.x, player.y, basePoints * multiplier);
+            } else if(gameState.tildeCorrect){
+                basePoints = 50;
+                gameState.streak++;
+                gameState.combo++;
+                playSound('correct');
+                showFeedback(true,`¡BIEN! +${basePoints * multiplier}`);
+                createFloatingScore(player.x, player.y, basePoints * multiplier);
+            } else {
+                basePoints = 0;
+                gameState.combo = 0; // Reset combo al fallar
+                gameState.perfectLevel = false;
+                playSound('wrong');
+                showFeedback(false,'¡INCORRECTO!');
+                loseLife();
+                return; // No continuar si falló
+            }
+            
+            // Actualizar UI de combo
+            updateComboDisplay();
+            
+            addScore(basePoints * multiplier);
+            nextWord();
+        }
+
+        function createFloatingScore(x, y, points){
+            const gameArea = document.getElementById('game-area');
+            const fs = document.createElement('div');
+            fs.className = 'floating-score';
+            fs.textContent = '+' + points;
+            fs.style.left = (x + 20) + 'px';
+            fs.style.top = (y - 20) + 'px';
+            gameArea.appendChild(fs);
+            setTimeout(() => fs.remove(), 1000);
+        }
+
+        function updateComboDisplay(){
+            const comboDisplay = document.getElementById('combo-display');
+            const comboCount = document.getElementById('combo-count');
+            const streakIndicator = document.getElementById('streak-indicator');
+            const streakCount = document.getElementById('streak-count');
+            
+            if(gameState.combo > 1){
+                comboDisplay.classList.add('active');
+                comboCount.textContent = 'x' + (1 + Math.floor(gameState.combo / 3));
+                if(gameState.combo % 3 === 0) playSound('combo');
+            } else {
+                comboDisplay.classList.remove('active');
+            }
+            
+            if(gameState.streak > 2){
+                streakIndicator.classList.add('active');
+                streakCount.textContent = gameState.streak;
+            } else {
+                streakIndicator.classList.remove('active');
+            }
         }
 
         function showDiacriticModal(){
@@ -1485,8 +1949,24 @@
 
         function checkDiacriticAnswer(sel,cor){
             document.getElementById('diacritic-modal').classList.remove('active');
-            if(sel===cor){playSound('correct');showFeedback(true,'¡CORRECTO!');addScore(100);nextWord();}
-            else{playSound('wrong');showFeedback(false,'¡INCORRECTO!');loseLife();}
+            let multiplier = 1 + Math.floor(gameState.combo / 3);
+            
+            if(sel===cor){
+                gameState.streak++;
+                gameState.combo++;
+                playSound('correct');
+                showFeedback(true,`¡CORRECTO! x${multiplier}`);
+                createFloatingScore(player.x, player.y, 100 * multiplier);
+                addScore(100 * multiplier);
+                updateComboDisplay();
+                nextWord();
+            } else {
+                gameState.combo = 0;
+                gameState.perfectLevel = false;
+                playSound('wrong');
+                showFeedback(false,'¡INCORRECTO!');
+                loseLife();
+            }
         }
 
         function showFeedback(success,text){
@@ -1501,16 +1981,27 @@
             gameState.wordsInCurrentWorld++;
             const world = getCurrentWorld();
             
+            // Actualizar barra de progreso
+            const progress = (gameState.wordsInCurrentWorld / world.wordsPerWorld) * 100;
+            document.getElementById('world-progress-bar').style.width = progress + '%';
+            
             // Cambiar de mundo cada 3 palabras
             if(gameState.wordsInCurrentWorld >= world.wordsPerWorld){
+                // Mostrar mensaje de nivel perfecto si aplica
+                if(gameState.perfectLevel){
+                    const perfectMsg = document.getElementById('perfect-level');
+                    perfectMsg.classList.add('active');
+                    addScore(200); // Bonus por nivel perfecto
+                    setTimeout(() => perfectMsg.classList.remove('active'), 2000);
+                }
+                
                 gameState.wordsInCurrentWorld = 0;
                 gameState.currentWorldIndex++;
+                gameState.combo = 0; // Reset combo entre mundos
+                updateComboDisplay();
                 
                 // Si hemos pasado todos los mundos, volver al primero o terminar
                 if(gameState.currentWorldIndex >= WORLDS.length){
-                    // Opción 1: Volver al primer mundo (bucle infinito hasta que se acaben las vidas)
-                    // gameState.currentWorldIndex = 0;
-                    // Opción 2: Terminar el juego
                     endGame();
                     return;
                 }
@@ -1534,31 +2025,77 @@
         }
 
         function loseLife(){
-            gameState.players[gameState.currentPlayer].lives--;updateHUD();
-            if(gameState.players[gameState.currentPlayer].lives<=0)playerEliminated();else switchPlayer();
+            const currentPlayer = gameState.players[gameState.currentPlayer];
+            currentPlayer.lives--;
+            
+            // Efecto visual de pérdida de vida
+            const hearts = document.querySelectorAll('.heart');
+            if(currentPlayer.lives >= 0 && currentPlayer.lives < hearts.length){
+                hearts[currentPlayer.lives].classList.add('lost');
+            }
+            
+            updateHUD();
+            
+            if(currentPlayer.lives <= 0){
+                // Jugador eliminado - verificar si quedan otros
+                const alivePlayers = gameState.players.filter(p => p.lives > 0);
+                if(alivePlayers.length === 0){
+                    endGame();
+                } else {
+                    // Cambiar al siguiente jugador vivo
+                    switchPlayer();
+                }
+            } else {
+                // CORRECCIÓN IMPORTANTE: Continuar con el mismo jugador, solo resetear posición
+                resetPlayerPosition();
+                showFeedback(false, '¡Cuidado! -1 vida');
+            }
         }
 
         function switchPlayer(){
-            let next=(gameState.currentPlayer+1)%gameState.numPlayers;let att=0;
-            while(gameState.players[next].lives<=0&&att<gameState.numPlayers){next=(next+1)%gameState.numPlayers;att++;}
-            if(att>=gameState.numPlayers||gameState.numPlayers===1){resetPlayerPosition();return;}
-            gameState.currentPlayer=next;
+            // Encontrar el siguiente jugador con vidas
+            let nextPlayer = (gameState.currentPlayer + 1) % gameState.numPlayers;
+            let attempts = 0;
+            
+            while(gameState.players[nextPlayer].lives <= 0 && attempts < gameState.numPlayers){
+                nextPlayer = (nextPlayer + 1) % gameState.numPlayers;
+                attempts++;
+            }
+            
+            if(attempts >= gameState.numPlayers){
+                // Todos los jugadores eliminados
+                endGame();
+                return;
+            }
+            
+            gameState.currentPlayer = nextPlayer;
             document.getElementById('transition-player').textContent=`Jugador ${gameState.currentPlayer+1}`;
-            document.getElementById('player-transition').classList.add('active');gameState.isPaused=true;
+            document.getElementById('player-transition').classList.add('active');
+            gameState.isPaused=true;
         }
 
         function continueAfterTransition(){
             playSound('click');
-            document.getElementById('player-transition').classList.remove('active');gameState.isPaused=false;resetPlayerPosition();updateHUD();
+            document.getElementById('player-transition').classList.remove('active');
+            gameState.isPaused=false;
+            resetPlayerPosition();
+            updateHUD();
         }
 
         function resetPlayerPosition(){
-            player.x=100;player.y=520;player.vx=0;player.vy=0;gameState.collectedTilde=false;gameState.isPaused=false;updateCollectedIndicator();
+            player.x=100;player.y=520;player.vx=0;player.vy=0;
+            gameState.collectedTilde=false;
+            gameState.isPaused=false;
+            updateCollectedIndicator();
             if(tildeInterval){clearInterval(tildeInterval);tildeInterval=null;}
             if(gameState.currentWord&&gameState.currentWord.type!=='diacritica')startTildeSpawner();
         }
 
-        function playerEliminated(){const alive=gameState.players.filter(p=>p.lives>0);if(alive.length===0)endGame();else switchPlayer();}
+        function playerEliminated(){
+            const alive=gameState.players.filter(p=>p.lives>0);
+            if(alive.length===0) endGame();
+            else switchPlayer();
+        }
 
         function endGame(){
             gameState.isPlaying=false;
@@ -1589,7 +2126,12 @@
             const cp=gameState.players[gameState.currentPlayer];
             document.getElementById('current-player-badge').textContent=`J${gameState.currentPlayer+1}`;
             const ld=document.getElementById('lives-display');ld.innerHTML='';
-            for(let i=0;i<3;i++){const h=document.createElement('span');h.className='heart'+(i>=cp.lives?' lost':'');h.textContent='❤️';ld.appendChild(h);}
+            for(let i=0;i<3;i++){
+                const h=document.createElement('span');
+                h.className='heart'+(i>=cp.lives?' lost':'');
+                h.textContent='❤️';
+                ld.appendChild(h);
+            }
             document.getElementById('score-display').textContent=cp.score;
             document.getElementById('level-display').textContent=`${gameState.currentWorldIndex+1}/${WORLDS.length}`;
             document.getElementById('world-badge').textContent=getCurrentWorld().name;
